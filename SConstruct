@@ -56,7 +56,7 @@ For example:
 Options:
 """ + opts.GenerateHelpText(env))
 
-env.EnableQt4Modules(['QtCore', 'QtGui'])
+env.EnableQt4Modules(['QtCore', 'QtGui', 'QtXml'])
 
 if env['DEBUG']:
     env['CXXFLAGS'] = Split(env['CXXFLAGS'])

@@ -18,13 +18,14 @@
 // 02110-1301  USA
 
 #include <QtGui>
+#include <QtXml>
 #include <iostream>
 #include <cstdlib>
 #include "Window.hpp"
 
 using namespace std;
 
-void render(Window *win, const QString &scene)
+void render(Window *win, const QDomDocument &document)
 {
     QElapsedTimer timer;
     timer.start();
@@ -82,10 +83,30 @@ int main(int argc, char **argv)
     QString scene = args.at(1);
     QString image = args.at(2);
 
+    QDomDocument scenedoc("Scene");
+    QFile file(scene);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        cerr << "It is impossible to open the scene" << endl;
+        return EXIT_FAILURE;
+    }
+
+    QString error;
+    int errorline, errorcolumn;
+    if (!scenedoc.setContent(&file, &error, &errorline, &errorcolumn))
+    {
+        file.close();
+        cerr << QString("Error in the scene file \"%1\", %2.%3: %4").
+            arg(scene).arg(errorline).arg(errorcolumn).arg(error).
+            toStdString() << endl;
+        return EXIT_FAILURE;
+    }
+    file.close();
+
     Window win;
     win.setFileName(image);
     win.show();
-    QtConcurrent::run(render, &win, scene);
+    QtConcurrent::run(render, &win, scenedoc);
 
     return app.exec();
 }
