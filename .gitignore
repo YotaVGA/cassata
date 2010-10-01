@@ -1,0 +1,6 @@
+.*.swp
+.scons*
+build/
+options.py
+out.png
+*.pyc
