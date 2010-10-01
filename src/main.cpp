@@ -22,10 +22,11 @@
 #include <iostream>
 #include <cstdlib>
 #include "Window.hpp"
+#include "Scene.hpp"
 
 using namespace std;
 
-void render(Window *win, const QDomDocument &document)
+void render(Window *win, const Scene &document)
 {
     QElapsedTimer timer;
     timer.start();
@@ -71,42 +72,27 @@ void render(Window *win, const QDomDocument &document)
 
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv);
-
-    QStringList args = app.arguments();
-    if (args.length() != 3)
+    try
     {
-        cerr << "Two arguments are required" << endl;
+        QApplication app(argc, argv);
+
+        QStringList args = app.arguments();
+        if (args.length() != 3)
+            throw QString("Two arguments are required");
+
+
+        Scene scene(args.at(1));
+
+        Window win;
+        win.setFileName(args.at(2));
+        win.show();
+        QtConcurrent::run(render, &win, scene);
+
+        return app.exec();
+    }
+    catch (const QString &s)
+    {
+        cerr << s.toStdString() << endl;
         return EXIT_FAILURE;
     }
-
-    QString scene = args.at(1);
-    QString image = args.at(2);
-
-    QDomDocument scenedoc("Scene");
-    QFile file(scene);
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        cerr << "It is impossible to open the scene" << endl;
-        return EXIT_FAILURE;
-    }
-
-    QString error;
-    int errorline, errorcolumn;
-    if (!scenedoc.setContent(&file, &error, &errorline, &errorcolumn))
-    {
-        file.close();
-        cerr << QString("Error in the scene file \"%1\", %2.%3: %4").
-            arg(scene).arg(errorline).arg(errorcolumn).arg(error).
-            toStdString() << endl;
-        return EXIT_FAILURE;
-    }
-    file.close();
-
-    Window win;
-    win.setFileName(image);
-    win.show();
-    QtConcurrent::run(render, &win, scenedoc);
-
-    return app.exec();
 }

@@ -22,7 +22,7 @@
 
 import os
 
-src = ["main.cpp", "Window.cpp"]
+src = ["main.cpp", "Window.cpp", "Scene.cpp"]
 
 opts = Variables('options.py')
 opts.Add(BoolVariable('DEBUG', 'If true the targets are build in debug mode', \
