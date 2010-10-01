@@ -26,13 +26,21 @@ using namespace std;
 
 void render(Window *win, const QString &scene)
 {
+    QElapsedTimer timer;
+    timer.start();
+
     for (int y = 0; y < 600; y++)
     {
         for (int x = 0; x < 800; x++)
             win->draw(x, y, Qt::white);
     }
     win->end();
-    cout << "Rendered!" << endl;
+
+    qint64 ms = timer.elapsed();
+    QString time = QTime().addMSecs(ms).toString("h'h' mm:ss:zzz'ms'");
+
+    cout << "Rendered!\n";
+    cout << "Rendering time: " << time.toStdString() << endl;
 }
 
 int main(int argc, char **argv)
