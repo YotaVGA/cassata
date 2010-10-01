@@ -36,8 +36,6 @@ opts.Add('CPPPATH', 'Header directorys', '/usr/include/eigen2')
 env = Environment(options  = opts, \
                   tools    = ['default', 'colors', 'defmessages', 'qt4'], \
                   toolpath = ['tools'],
-                  LIBS     = ['crlibm', 'pthread'],
-                  CPPFAGS  = '-popenmp',
                   QT4_MOC  = 'moc')
 
 Help("""Use one or more of the subsequent targets:

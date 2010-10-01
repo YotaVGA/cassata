@@ -32,6 +32,7 @@ void render(Window *win, const QString &scene)
             win->draw(x, y, Qt::white);
     }
     win->end();
+    cout << "Rendered!" << endl;
 }
 
 int main(int argc, char **argv)
