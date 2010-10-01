@@ -37,7 +37,32 @@ void render(Window *win, const QString &scene)
     win->end();
 
     qint64 ms = timer.elapsed();
-    QString time = QTime().addMSecs(ms).toString("h'h' mm:ss:zzz'ms'");
+    qint64 s  = ms / 1000;
+    qint64 m  = s  / 60;
+    qint64 h  = m  / 60;
+    qint64 d  = h  / 24;
+    ms %= 1000;
+    s  %= 60;
+    m  %= 60;
+    h  %= 24;
+
+    QString time;
+
+    if (!s and !m and !h and !d)
+        time = QString("%1ms").arg(ms);
+    else if (!m and !h and !d)
+        time = QString("%1.%2s").arg(s).arg(ms, 3, 10, QChar('0'));
+    else if (!h and !d)
+        time = QString("%1:%2.%3").arg(m, 2, 10, QChar('0')).
+            arg(s, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
+    else if (!d)
+        time = QString("%1:%2:%3.%4").arg(h, 2, 10, QChar('0')).
+            arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).
+            arg(ms, 3, 10, QChar('0'));
+    else
+        time = QString("%1d %2:%3:%4.%5").arg(d).arg(h, 2, 10, QChar('0')).
+            arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).
+            arg(ms, 3, 10, QChar('0'));
 
     cout << "Rendered!\n";
     cout << "Rendering time: " << time.toStdString() << endl;
