@@ -22,8 +22,7 @@
 
 import os
 
-src = ["main.cpp"]
-moc = ["Window.hpp"]
+src = ["main.cpp", "Window.cpp"]
 
 opts = Variables('options.py')
 opts.Add(BoolVariable('DEBUG', 'If true the targets are build in debug mode', \
@@ -64,17 +63,10 @@ if env['DEBUG']:
     env.Append(CXXFLAGS = '-g')
 
 d = lambda s: os.path.join(env['BUILDDIR'], s)
-s = lambda s: os.path.join('src', s)
 
 env.BuildDir(env['BUILDDIR'], 'src')
 
-mocsrc = []
-for i in moc:
-    dest = d('moc_%s.cpp' % i.rsplit('.', 1)[0])
-    mocsrc.append(env.Moc4(dest, s(i)))
-
-cassata = env.Program(os.path.join(env['BUILDDIR'], 'cassata'), \
-                          map(d, src) + mocsrc)
+cassata = env.Program(os.path.join(env['BUILDDIR'], 'cassata'), map(d, src))
 
 Default(cassata)
 env.Alias('cassata', cassata)
