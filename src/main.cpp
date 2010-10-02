@@ -29,19 +29,10 @@
 
 using namespace std;
 
-void render(Window *win, Scene &scene)
+static QString showTime(qint64 ms)
 {
-    QElapsedTimer timer;
-    timer.start();
+    QString time;
 
-    for (int y = 0; y < scene.height(); y++)
-    {
-        for (int x = 0; x < scene.width(); x++)
-            win->draw(x, y, scene.pixel(x, y));
-    }
-    win->end();
-
-    qint64 ms = timer.elapsed();
     qint64 s  = ms / 1000;
     qint64 m  = s  / 60;
     qint64 h  = m  / 60;
@@ -50,8 +41,6 @@ void render(Window *win, Scene &scene)
     s  %= 60;
     m  %= 60;
     h  %= 24;
-
-    QString time;
 
     if (!s and !m and !h and !d)
         time = QString("%1ms").arg(ms);
@@ -69,8 +58,24 @@ void render(Window *win, Scene &scene)
             arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).
             arg(ms, 3, 10, QChar('0'));
 
+    return time;
+}
+
+static void render(Window *win, Scene &scene)
+{
+    QElapsedTimer timer;
+    timer.start();
+
+    for (int y = 0; y < scene.height(); y++)
+    {
+        for (int x = 0; x < scene.width(); x++)
+            win->draw(x, y, scene.pixel(x, y));
+    }
+    win->end();
+
     cout << "Rendered!\n";
-    cout << "Rendering time: " << time.toStdString() << endl;
+    cout << "Rendering time: " <<
+        showTime(timer.elapsed()).toStdString() << endl;
 }
 
 int main(int argc, char **argv)
@@ -88,7 +93,13 @@ int main(int argc, char **argv)
         if (args.length() != 3)
             throw QString("Two arguments are required");
 
+        QElapsedTimer timer;
+        timer.start();
+
         Scene scene(args.at(1));
+
+        cout << "Parsing time: " <<
+            showTime(timer.elapsed()).toStdString() << endl;
 
         Window win;
         win.resize(scene.width(), scene.height());
