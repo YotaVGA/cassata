@@ -24,20 +24,23 @@
 #include <QtGui>
 #include "SceneElement.hpp"
 
+class SceneCamera;
+
 typedef QHash<QString, QSharedPointer<QObject> > SceneList;
 
 class Scene
 {
     protected:
+        int w, h;
         QDomDocument scenedoc;
         QHash<QString, SceneList> lists;
-        int w, h;
+        QSharedPointer<SceneCamera> camera;
 
     public:
         Scene(const QString &filename);
 
         SceneList &element(const QString &name);
-        const QColor pixel(int x, int y) const;
+        const QColor pixel(int x, int y);
 
         int width() const;
         int height() const;
@@ -70,5 +73,7 @@ template <typename T> class SceneRegister : public BaseSceneRegister
             return new T(node, scene);
         }
 };
+
+#include "SceneCamera.hpp"
 
 #endif

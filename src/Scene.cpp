@@ -68,6 +68,9 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
 
     if (element("camera")["shader"].isNull())
         throw QString("Error in scenefile: Camera missing");
+    
+    camera = qSharedPointerDynamicCast<SceneCamera>(
+            element("camera")["shader"]);
 }
 
 SceneList &Scene::element(const QString &name)
@@ -75,9 +78,9 @@ SceneList &Scene::element(const QString &name)
     return lists[name];
 }
 
-const QColor Scene::pixel(int x, int y) const
+const QColor Scene::pixel(int x, int y)
 {
-    return Qt::white;
+    return camera->pixel(x, y);
 }
 
 int Scene::width() const

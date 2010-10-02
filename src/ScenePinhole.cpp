@@ -17,20 +17,14 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#ifndef SCENECAMERA_HPP
-#define SCENECAMERA_HPP
+#include "ScenePinhole.hpp"
 
-#include "SceneElement.hpp"
-
-class SceneCamera : public SceneElement
+ScenePinhole::ScenePinhole(const QDomNode &node, Scene &scene) :
+    SceneCamera(node, scene)
 {
-    protected:
-        Scene &refscene;
+}
 
-    public:
-        SceneCamera(const QDomNode &node, Scene &scene);
-
-        virtual const QColor pixel(int x, int y) = 0;
-};
-
-#endif
+const QColor ScenePinhole::pixel(int x, int y)
+{
+    return Qt::white;
+}

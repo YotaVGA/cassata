@@ -17,20 +17,17 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#ifndef SCENECAMERA_HPP
-#define SCENECAMERA_HPP
+#ifndef SCENEPINHOLE_HPP
+#define SCENEPINHOLE_HPP
 
-#include "SceneElement.hpp"
+#include "SceneCamera.hpp"
 
-class SceneCamera : public SceneElement
+class ScenePinhole : public SceneCamera
 {
-    protected:
-        Scene &refscene;
-
     public:
-        SceneCamera(const QDomNode &node, Scene &scene);
+        ScenePinhole(const QDomNode &node, Scene &scene);
 
-        virtual const QColor pixel(int x, int y) = 0;
+        virtual const QColor pixel(int x, int y);
 };
 
 #endif

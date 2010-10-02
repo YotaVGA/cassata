@@ -25,11 +25,11 @@
 #include "Scene.hpp"
 #include "SceneImage.hpp"
 #include "SceneMesh.hpp"
-#include "SceneCamera.hpp"
+#include "ScenePinhole.hpp"
 
 using namespace std;
 
-void render(Window *win, const Scene &scene)
+void render(Window *win, Scene &scene)
 {
     QElapsedTimer timer;
     timer.start();
@@ -76,9 +76,9 @@ void render(Window *win, const Scene &scene)
 int main(int argc, char **argv)
 {
     //Scene registrations
-    SceneRegister<SceneImage>  regsceneimage ("image");
-    SceneRegister<SceneMesh>   regscenemesh  ("mesh");
-    SceneRegister<SceneCamera> regscenecamera("camera");
+    SceneRegister<SceneImage>   regsceneimage ("image");
+    SceneRegister<SceneMesh>    regscenemesh  ("mesh");
+    SceneRegister<ScenePinhole> regscenecamera("pinhole");
 
     try
     {

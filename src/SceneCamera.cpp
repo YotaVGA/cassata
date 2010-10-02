@@ -19,7 +19,7 @@
 
 #include "SceneCamera.hpp"
 
-SceneCamera::SceneCamera(const QDomNode &node, Scene &scene)
+SceneCamera::SceneCamera(const QDomNode &node, Scene &scene) : refscene(scene)
 {
     scene.element("camera")["shader"] = self;
 }
