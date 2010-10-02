@@ -25,7 +25,7 @@
 class SceneImage : public SceneElement
 {
     public:
-        SceneImage(const QDomNode &node, const Scene &scene);
+        SceneImage(const QDomNode &node, Scene &scene);
 };
 
 #endif

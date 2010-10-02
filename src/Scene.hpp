@@ -24,14 +24,18 @@
 #include <QtGui>
 #include "SceneElement.hpp"
 
+typedef QHash<QString, QSharedPointer<QObject> > SceneList;
+
 class Scene
 {
     private:
         QDomDocument scenedoc;
+        QHash<QString, SceneList> lists;
 
     public:
         Scene(const QString &filename);
 
+        SceneList &element(const QString &name);
         const QColor pixel(int x, int y) const;
 };
 
@@ -39,7 +43,7 @@ class BaseSceneRegister
 {
     public:
         virtual QSharedPointer<SceneElement>
-            newClass(const QDomNode &node, const Scene &scene) const = 0;
+            newClass(const QDomNode &node, Scene &scene) const = 0;
 
         virtual ~BaseSceneRegister();
 };
@@ -55,7 +59,7 @@ template <typename T> class SceneRegister : public BaseSceneRegister
         }
 
         virtual QSharedPointer<SceneElement>
-            newClass(const QDomNode &node, const Scene &scene) const
+            newClass(const QDomNode &node, Scene &scene) const
         {
             return QSharedPointer<SceneElement>(new T(node, scene));
         }

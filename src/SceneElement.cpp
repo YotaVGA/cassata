@@ -19,6 +19,10 @@
 
 #include "SceneElement.hpp"
 
+void SceneElement::initialize()
+{
+}
+
 SceneElement::~SceneElement()
 {
 }

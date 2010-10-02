@@ -38,23 +38,36 @@ Scene::Scene(const QString &filename) : scenedoc("scene")
         throw QString("Error in the scene file:, %2.%3: %4").
             arg(errorline).arg(errorcolumn).arg(error);
 
+    QList<QSharedPointer<SceneElement> > shaders;
     for (QDomNode i = scenedoc.firstChildElement().firstChild(); !i.isNull();
             i = i.nextSibling())
     {
         if (!i.isElement())
             continue;
 
-        QDomElement element = i.toElement();
+        QDomElement elem = i.toElement();
         QHash<QString, BaseSceneRegister *>::const_iterator shaderiterator =
-            sceneregistrations.find(element.tagName());
+            sceneregistrations.find(elem.tagName());
         if (shaderiterator == sceneregistrations.end())
             throw QString("Error in %1.%2: Shader %3 do not found").
                 arg(i.lineNumber()).arg(i.columnNumber()).
-                arg(element.tagName());
+                arg(elem.tagName());
 
         QSharedPointer<SceneElement> shader =
             shaderiterator.value()->newClass(i, *this);
+        shaders << shader;
+        QString name = elem.attribute("id");
+        if (!name.isEmpty())
+            element("names")[name] = shader;
     }
+
+    for (int i = 0; i < shaders.size(); i++)
+        shaders[i]->initialize();
+}
+
+SceneList &Scene::element(const QString &name)
+{
+    return lists[name];
 }
 
 const QColor Scene::pixel(int x, int y) const

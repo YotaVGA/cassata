@@ -25,6 +25,8 @@
 class SceneElement : public QObject
 {
     public:
+        virtual void initialize();
+
         virtual ~SceneElement();
 };
 
