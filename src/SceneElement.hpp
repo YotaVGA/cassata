@@ -17,8 +17,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#ifndef SCENEELEMENT_H
-#define SCENEELEMENT_H
+#ifndef SCENEELEMENT_HPP
+#define SCENEELEMENT_HPP
 
 #include <QtCore>
 

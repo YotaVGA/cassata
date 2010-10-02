@@ -17,8 +17,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#ifndef SCENEMESH_H
-#define SCENEMESH_H
+#ifndef SCENEMESH_HPP
+#define SCENEMESH_HPP
 
 #include "SceneElement.hpp"
 #include "Float.hpp"
