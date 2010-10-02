@@ -116,11 +116,10 @@ void Window::update()
     int ld = lastdraw, ll = lastline;
     int w = width();
 
+    lastdraw = lastline;
+
     l.unlock();
     repaint(0, ld, w, ll);
-    l.relock();
-
-    lastdraw = lastline;
 }
 
 void Window::save()
