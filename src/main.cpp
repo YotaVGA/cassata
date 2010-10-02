@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include "Window.hpp"
 #include "Scene.hpp"
+#include "SceneInfo.hpp"
 
 using namespace std;
 

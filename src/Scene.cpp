@@ -19,6 +19,12 @@
 
 #include "Scene.hpp"
 
+QMap<QString, BaseSceneRegister *> sceneregistrations;
+
+BaseSceneRegister::~BaseSceneRegister()
+{
+}
+
 Scene::Scene(const QString &filename) : scenedoc("scene")
 {
     QFile file(filename);
@@ -40,7 +46,7 @@ Scene::Scene(const QString &filename) : scenedoc("scene")
 
         QDomElement element = i.toElement();
 
-        //TODO: Generate the objects for the interpretation
+        // TODO: Generate the objects for the interpretation
     }
 }
 

@@ -23,6 +23,14 @@
 #include <QtXml>
 #include <QtGui>
 
+class BaseSceneRegister
+{
+    public:
+        virtual QSharedPointer<QObject> newClass(const QDomNode &node) const = 0;
+
+        virtual ~BaseSceneRegister();
+};
+
 class Scene
 {
     private:
@@ -32,6 +40,25 @@ class Scene
         Scene(const QString &filename);
 
         const QColor pixel(int x, int y) const;
+};
+
+// HACK: The gcc initialize the global objects in link order. Scene.cpp should
+// be linked after the Scene*.cpp files.
+// A more clean solution should be found.
+template <typename T> class SceneRegister : public BaseSceneRegister
+{
+    public:
+        SceneRegister(const QString &name)
+        {
+            extern QMap<QString, BaseSceneRegister *> sceneregistrations;
+
+            sceneregistrations[name] = this;
+        }
+
+        virtual QSharedPointer<QObject> newClass(const QDomNode &node) const
+        {
+            return QSharedPointer<QObject>(new T(node));
+        }
 };
 
 #endif
