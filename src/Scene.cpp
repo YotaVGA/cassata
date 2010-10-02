@@ -54,7 +54,7 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
                 arg(elem.tagName());
 
         QSharedPointer<SceneElement> shader =
-            shaderiterator.value()->newClass(i, *this);
+            shaderiterator.value()->newClass(i, *this)->pointer();
         shaders << shader;
         QString name = elem.attribute("id");
         if (!name.isEmpty())
@@ -65,6 +65,9 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
         shaders[i]->initialize();
 
     element("names").clear();
+
+    if (element("camera")["shader"].isNull())
+        throw QString("Error in scenefile: Camera missing");
 }
 
 SceneList &Scene::element(const QString &name)

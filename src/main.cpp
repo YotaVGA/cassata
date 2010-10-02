@@ -25,6 +25,7 @@
 #include "Scene.hpp"
 #include "SceneImage.hpp"
 #include "SceneMesh.hpp"
+#include "SceneCamera.hpp"
 
 using namespace std;
 
@@ -75,8 +76,9 @@ void render(Window *win, const Scene &scene)
 int main(int argc, char **argv)
 {
     //Scene registrations
-    SceneRegister<SceneImage> regsceneimage("image");
-    SceneRegister<SceneMesh>  regscenemesh ("mesh");
+    SceneRegister<SceneImage>  regsceneimage ("image");
+    SceneRegister<SceneMesh>   regscenemesh  ("mesh");
+    SceneRegister<SceneCamera> regscenecamera("camera");
 
     try
     {

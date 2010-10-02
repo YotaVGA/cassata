@@ -17,22 +17,9 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneElement.hpp"
+#include "SceneCamera.hpp"
 
-SceneElement::SceneElement()
+SceneCamera::SceneCamera(const QDomNode &node, Scene &scene)
 {
-    self = (typeof self)(this);
-}
-
-void SceneElement::initialize()
-{
-}
-
-QSharedPointer<SceneElement> SceneElement::pointer()
-{
-    return self;
-}
-
-SceneElement::~SceneElement()
-{
+    scene.element("camera")["shader"] = self;
 }

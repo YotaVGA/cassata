@@ -17,22 +17,15 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
+#ifndef SCENECAMERA_HPP
+#define SCENECAMERA_HPP
+
 #include "SceneElement.hpp"
 
-SceneElement::SceneElement()
+class SceneCamera : public SceneElement
 {
-    self = (typeof self)(this);
-}
+    public:
+        SceneCamera(const QDomNode &node, Scene &scene);
+};
 
-void SceneElement::initialize()
-{
-}
-
-QSharedPointer<SceneElement> SceneElement::pointer()
-{
-    return self;
-}
-
-SceneElement::~SceneElement()
-{
-}
+#endif

@@ -5,6 +5,7 @@
         <width> 800</width>
         <height>600</height>
     </image>
+    <camera/>
     <mesh>
         <polygon>
             <point>-1 -1 -1</point>
