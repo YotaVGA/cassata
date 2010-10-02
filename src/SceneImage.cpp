@@ -21,4 +21,30 @@
 
 SceneImage::SceneImage(const QDomNode &node, Scene &scene)
 {
+    for (QDomNode i = node.firstChild(); !i.isNull(); i = i.nextSibling())
+    {
+        if (!i.isElement())
+            continue;
+
+        QDomElement elem = i.toElement();
+        QString name = elem.tagName();
+
+        bool valid;
+        int value = elem.text().toInt(&valid);
+
+        if (name == "width")
+        {
+            if (!valid)
+                throw QString("Error in %1.%2: Image width do not valid").
+                    arg(i.lineNumber()).arg(i.columnNumber());
+            scene.setWidth(value);
+        }
+        else if (name == "height")
+        {
+            if (!valid)
+                throw QString("Error in %1.%2: Image height do not valid").
+                    arg(i.lineNumber()).arg(i.columnNumber());
+            scene.setHeight(value);
+        }
+    }
 }
