@@ -73,6 +73,9 @@ void render(Window *win, const Scene &scene)
 
 int main(int argc, char **argv)
 {
+    //Scene registrations
+    SceneRegister<SceneImage> regsceneinfo("info");
+
     try
     {
         QApplication app(argc, argv);

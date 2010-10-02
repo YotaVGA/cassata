@@ -19,8 +19,6 @@
 
 #include "SceneImage.hpp"
 
-SceneRegister<SceneImage> regsceneinfo("info");
-
 SceneImage::SceneImage(const QDomNode &node)
 {
 }

@@ -42,9 +42,6 @@ class Scene
         const QColor pixel(int x, int y) const;
 };
 
-// HACK: The gcc initialize the global objects in link order. Scene.cpp should
-// be linked after the Scene*.cpp files.
-// A more clean solution should be found.
 template <typename T> class SceneRegister : public BaseSceneRegister
 {
     public:
