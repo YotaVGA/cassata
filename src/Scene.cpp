@@ -35,7 +35,7 @@ Scene::Scene(const QString &filename) : scenedoc("scene")
     QString error;
     int errorline, errorcolumn;
     if (!scenedoc.setContent(&file, &error, &errorline, &errorcolumn))
-        throw QString("Error in the scene file:, %2.%3: %4").
+        throw QString("Error in the scene file: %2.%3: %4").
             arg(errorline).arg(errorcolumn).arg(error);
 
     QList<QSharedPointer<SceneElement> > shaders;
