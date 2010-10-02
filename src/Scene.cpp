@@ -63,6 +63,8 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
 
     for (int i = 0; i < shaders.size(); i++)
         shaders[i]->initialize();
+
+    element("names").clear();
 }
 
 SceneList &Scene::element(const QString &name)

@@ -2,7 +2,7 @@
 
 <scene>
     <image>
-        <width>800</width>
+        <width> 800</width>
         <height>600</height>
     </image>
 </scene>
