@@ -22,14 +22,7 @@
 
 #include <QtXml>
 #include <QtGui>
-
-class BaseSceneRegister
-{
-    public:
-        virtual QSharedPointer<QObject> newClass(const QDomNode &node) const = 0;
-
-        virtual ~BaseSceneRegister();
-};
+#include "SceneElement.hpp"
 
 class Scene
 {
@@ -42,19 +35,29 @@ class Scene
         const QColor pixel(int x, int y) const;
 };
 
+class BaseSceneRegister
+{
+    public:
+        virtual QSharedPointer<SceneElement>
+            newClass(const QDomNode &node, const Scene &scene) const = 0;
+
+        virtual ~BaseSceneRegister();
+};
+
 template <typename T> class SceneRegister : public BaseSceneRegister
 {
     public:
         SceneRegister(const QString &name)
         {
-            extern QMap<QString, BaseSceneRegister *> sceneregistrations;
+            extern QHash<QString, BaseSceneRegister *> sceneregistrations;
 
             sceneregistrations[name] = this;
         }
 
-        virtual QSharedPointer<QObject> newClass(const QDomNode &node) const
+        virtual QSharedPointer<SceneElement>
+            newClass(const QDomNode &node, const Scene &scene) const
         {
-            return QSharedPointer<QObject>(new T(node));
+            return QSharedPointer<SceneElement>(new T(node, scene));
         }
 };
 

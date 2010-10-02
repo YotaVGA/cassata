@@ -74,7 +74,7 @@ void render(Window *win, const Scene &scene)
 int main(int argc, char **argv)
 {
     //Scene registrations
-    SceneRegister<SceneImage> regsceneinfo("info");
+    SceneRegister<SceneImage> regsceneinfo("image");
 
     try
     {

@@ -19,6 +19,6 @@
 
 #include "SceneImage.hpp"
 
-SceneImage::SceneImage(const QDomNode &node)
+SceneImage::SceneImage(const QDomNode &node, const Scene &scene)
 {
 }

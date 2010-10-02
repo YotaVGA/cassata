@@ -19,7 +19,7 @@
 
 #include "Scene.hpp"
 
-QMap<QString, BaseSceneRegister *> sceneregistrations;
+QHash<QString, BaseSceneRegister *> sceneregistrations;
 
 BaseSceneRegister::~BaseSceneRegister()
 {
@@ -45,8 +45,15 @@ Scene::Scene(const QString &filename) : scenedoc("scene")
             continue;
 
         QDomElement element = i.toElement();
+        QHash<QString, BaseSceneRegister *>::const_iterator shaderiterator =
+            sceneregistrations.find(element.tagName());
+        if (shaderiterator == sceneregistrations.end())
+            throw QString("Error in %1.%2: Shader %3 do not found").
+                arg(i.lineNumber()).arg(i.columnNumber()).
+                arg(element.tagName());
 
-        // TODO: Generate the objects for the interpretation
+        QSharedPointer<SceneElement> shader =
+            shaderiterator.value()->newClass(i, *this);
     }
 }
 

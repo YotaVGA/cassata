@@ -20,12 +20,14 @@
 #ifndef SCENEELEMENT_H
 #define SCENEELEMENT_H
 
-#include "Scene.hpp"
+#include <QtCore>
 
 class SceneElement : public QObject
 {
     public:
         virtual ~SceneElement();
 };
+
+#include "Scene.hpp"
 
 #endif
