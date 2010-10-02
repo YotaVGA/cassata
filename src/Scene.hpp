@@ -28,15 +28,21 @@ typedef QHash<QString, QSharedPointer<QObject> > SceneList;
 
 class Scene
 {
-    private:
+    protected:
         QDomDocument scenedoc;
         QHash<QString, SceneList> lists;
+        int w, h;
 
     public:
         Scene(const QString &filename);
 
         SceneList &element(const QString &name);
         const QColor pixel(int x, int y) const;
+
+        int width() const;
+        int height() const;
+        void setWidth(int width);
+        void setHeight(int height);
 };
 
 class BaseSceneRegister

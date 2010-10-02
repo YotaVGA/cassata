@@ -32,9 +32,9 @@ void render(Window *win, const Scene &scene)
     QElapsedTimer timer;
     timer.start();
 
-    for (int y = 0; y < 600; y++)
+    for (int y = 0; y < scene.height(); y++)
     {
-        for (int x = 0; x < 800; x++)
+        for (int x = 0; x < scene.width(); x++)
             win->draw(x, y, scene.pixel(x, y));
     }
     win->end();
@@ -84,12 +84,12 @@ int main(int argc, char **argv)
         if (args.length() != 3)
             throw QString("Two arguments are required");
 
-
         Scene scene(args.at(1));
 
         Window win;
-        win.setFileName(args.at(2));
+        win.resize(scene.width(), scene.height());
         win.show();
+        win.setFileName(args.at(2));
         QtConcurrent::run(render, &win, scene);
 
         return app.exec();

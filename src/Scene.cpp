@@ -25,7 +25,7 @@ BaseSceneRegister::~BaseSceneRegister()
 {
 }
 
-Scene::Scene(const QString &filename) : scenedoc("scene")
+Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
 {
     QFile file(filename);
 
@@ -73,4 +73,24 @@ SceneList &Scene::element(const QString &name)
 const QColor Scene::pixel(int x, int y) const
 {
     return Qt::white;
+}
+
+int Scene::width() const
+{
+    return w;
+}
+
+int Scene::height() const
+{
+    return h;
+}
+
+void Scene::setWidth(int width)
+{
+    w = width;
+}
+
+void Scene::setHeight(int heigth)
+{
+    h = heigth;
 }
