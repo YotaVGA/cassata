@@ -31,4 +31,20 @@ Scene::Scene(const QString &filename) : scenedoc("scene")
     if (!scenedoc.setContent(&file, &error, &errorline, &errorcolumn))
         throw QString("Error in the scene file:, %2.%3: %4").
             arg(errorline).arg(errorcolumn).arg(error);
+
+    for (QDomNode i = scenedoc.firstChildElement().firstChild(); !i.isNull();
+            i = i.nextSibling())
+    {
+        if (!i.isElement())
+            continue;
+
+        QDomElement element = i.toElement();
+
+        //TODO: Generate the objects for the interpretation
+    }
+}
+
+const QColor Scene::pixel(int x, int y) const
+{
+    return Qt::white;
 }

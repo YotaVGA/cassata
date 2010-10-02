@@ -26,7 +26,7 @@
 
 using namespace std;
 
-void render(Window *win, const Scene &document)
+void render(Window *win, const Scene &scene)
 {
     QElapsedTimer timer;
     timer.start();
@@ -34,7 +34,7 @@ void render(Window *win, const Scene &document)
     for (int y = 0; y < 600; y++)
     {
         for (int x = 0; x < 800; x++)
-            win->draw(x, y, Qt::white);
+            win->draw(x, y, scene.pixel(x, y));
     }
     win->end();
 

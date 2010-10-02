@@ -21,6 +21,7 @@
 #define SCENE_HPP
 
 #include <QtXml>
+#include <QtGui>
 
 class Scene
 {
@@ -29,6 +30,8 @@ class Scene
 
     public:
         Scene(const QString &filename);
+
+        const QColor pixel(int x, int y) const;
 };
 
 #endif
