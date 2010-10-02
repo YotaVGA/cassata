@@ -24,6 +24,7 @@
 #include "Window.hpp"
 #include "Scene.hpp"
 #include "SceneImage.hpp"
+#include "SceneMesh.hpp"
 
 using namespace std;
 
@@ -74,7 +75,8 @@ void render(Window *win, const Scene &scene)
 int main(int argc, char **argv)
 {
     //Scene registrations
-    SceneRegister<SceneImage> regsceneinfo("image");
+    SceneRegister<SceneImage> regsceneimage("image");
+    SceneRegister<SceneMesh>  regscenemesh ("mesh");
 
     try
     {

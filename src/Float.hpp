@@ -31,8 +31,6 @@
 #include <Eigen/Geometry>
 #include <crlibm.h>
 
-using namespace boost::numeric::interval_lib;
-
 typedef double Float;
 
 class RoundingIFloat :
@@ -57,8 +55,10 @@ public:
 #undef ROUNDINGIFLOATFUNC
 };
 
-typedef boost::numeric::interval<Float,
-                                 policies<save_state<RoundingIFloat>,
+typedef boost::numeric::interval<Float, boost::numeric::interval_lib::
+                                 policies<boost::numeric::interval_lib::
+                                 save_state<RoundingIFloat>,
+                                 boost::numeric::interval_lib::
                                           checking_strict<Float> > > IFloat;
 
 #define PI   (pi<IFloat>())
@@ -69,6 +69,8 @@ typedef boost::numeric::interval<Float,
 // conformant to C99, but it can return an equivalent angle
 inline IFloat atan2(const IFloat &x, const IFloat &y)
 {
+    using namespace boost::numeric::interval_lib;
+
     IFloat angle = atan(y / x);
 
     using namespace compare::certain;
