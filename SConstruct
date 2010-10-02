@@ -22,7 +22,7 @@
 
 import os
 
-src = ["main.cpp", "Window.cpp", "SceneElement.cpp", "SceneInfo.cpp",
+src = ["main.cpp", "Window.cpp", "SceneElement.cpp", "SceneImage.cpp",
        "Scene.cpp"]
 
 opts = Variables('options.py')

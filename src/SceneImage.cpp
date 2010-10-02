@@ -17,10 +17,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneInfo.hpp"
+#include "SceneImage.hpp"
 
-SceneRegister<SceneInfo> regsceneinfo("info");
+SceneRegister<SceneImage> regsceneinfo("info");
 
-SceneInfo::SceneInfo(const QDomNode &node)
+SceneImage::SceneImage(const QDomNode &node)
 {
 }

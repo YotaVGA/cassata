@@ -22,10 +22,10 @@
 
 #include "SceneElement.hpp"
 
-class SceneInfo : public SceneElement
+class SceneImage : public SceneElement
 {
     public:
-        SceneInfo(const QDomNode &node);
+        SceneImage(const QDomNode &node);
 };
 
 #endif
