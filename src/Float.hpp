@@ -64,6 +64,7 @@ typedef boost::numeric::interval<Float, boost::numeric::interval_lib::
 #define PI   (pi<IFloat>())
 #define PI2  (pi_twice<IFloat>())
 #define PI_H (pi_half<IFloat>())
+#define INF  (std::numeric_limits<Float>::infinity())
 
 // NOTE: This work well, but for optimizzation reasons it isn't exactly
 // conformant to C99, but it can return an equivalent angle
@@ -125,6 +126,7 @@ inline const IFloat  ei_cos (const IFloat &x) {return cos(x);}
 }
 }
 
+typedef Eigen::Matrix<IFloat, 2, 1> IVector2;
 typedef Eigen::Matrix<IFloat, 3, 1> IVector3;
 typedef Eigen::Matrix<IFloat, 4, 1> IVector4;
 typedef Eigen::Matrix<IFloat, 4, 4> IMatrix4;
