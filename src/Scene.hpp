@@ -26,7 +26,7 @@
 
 class SceneCamera;
 
-typedef QHash<QString, QSharedPointer<QObject> > SceneList;
+typedef QHash<QString, QList<QSharedPointer<QObject> > > SceneList;
 
 class Scene
 {

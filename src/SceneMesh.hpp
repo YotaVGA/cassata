@@ -21,13 +21,10 @@
 #define SCENEMESH_HPP
 
 #include "SceneElement.hpp"
-#include "Float.hpp"
+#include "Triangle.hpp"
 
 class SceneMesh : public SceneElement
 {
-    protected:
-        QList<QList<Float> > polygons;
-
     public:
         SceneMesh(const QDomNode &node, Scene &scene);
 };

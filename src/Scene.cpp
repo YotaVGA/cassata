@@ -18,6 +18,7 @@
 // 02110-1301  USA
 
 #include "Scene.hpp"
+#include "Geometry.hpp"
 
 QHash<QString, BaseSceneRegister *> sceneregistrations;
 
@@ -58,7 +59,7 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
         shaders << shader;
         QString name = elem.attribute("id");
         if (!name.isEmpty())
-            element("names")[name] = shader;
+            element("names")[name] << shader;
     }
 
     for (int i = 0; i < shaders.size(); i++)
@@ -66,11 +67,14 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
 
     element("names").clear();
 
-    if (element("camera")["shader"].isNull())
+    if (!element("camera")["shader"].size())
         throw QString("Error in scenefile: Camera missing");
+
+    if (element("camera")["shader"].size() > 1)
+        throw QString("Error in scenefile: More than a camera");
     
     camera = qSharedPointerDynamicCast<SceneCamera>(
-            element("camera")["shader"]);
+            element("camera")["shader"][0]);
 }
 
 SceneList &Scene::element(const QString &name)

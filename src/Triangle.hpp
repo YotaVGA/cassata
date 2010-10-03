@@ -17,9 +17,22 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneCamera.hpp"
+#ifndef TRIANGLE_HPP
+#define TRIANGLE_HPP
 
-SceneCamera::SceneCamera(const QDomNode &node, Scene &scene) : refscene(scene)
+#include "Geometry.hpp"
+
+class Triangle : Geometry
 {
-    scene.element("camera")["shader"] << self;
-}
+    protected:
+        IVector3 a, b, c;
+
+    public:
+        Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc);
+
+        virtual const IFloat hit(const Ray &ray, IFloat *distance,
+                DifferentialSpace *ds) const;
+        virtual const IFloat value(const DifferentialSpace &ds) const;
+};
+
+#endif

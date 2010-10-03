@@ -48,7 +48,7 @@ SceneMesh::SceneMesh(const QDomNode &node, Scene &scene)
                                 "Error in %1.%2: Only tris are supported").
                             arg(j.lineNumber()).arg(j.columnNumber());
 
-                    QList<Float> point;
+                    QList<Float> points;
                     for (int k = 0; k < 3; k++)
                     {
                         bool valid;
@@ -58,10 +58,12 @@ SceneMesh::SceneMesh(const QDomNode &node, Scene &scene)
                             throw QString("Error in %1.%2: float error").
                             arg(j.lineNumber()).arg(j.columnNumber());
 
-                        point << value;
+                        points << value;
                     }
 
-                    polygons << point;
+                    //TODO
+                    //polygons << Triangle(scene, points[0], points[1],
+                    //        points[2]);
                 }
             }
         }
