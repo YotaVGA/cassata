@@ -24,8 +24,10 @@
 #include "DifferentialSpace.hpp"
 #include "Scene.hpp"
 
-class Geometry
+class Geometry : public QObject
 {
+    Q_OBJECT
+
     protected:
         Scene &refscene;
 

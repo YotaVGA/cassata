@@ -21,7 +21,7 @@
 
 SceneElement::SceneElement()
 {
-    self = (typeof self)(this);
+    self = QSharedPointer<SceneElement>(this, &QObject::deleteLater);
 }
 
 void SceneElement::initialize()

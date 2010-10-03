@@ -85,6 +85,8 @@ int main(int argc, char **argv)
     SceneRegister<SceneMesh>    regscenemesh  ("mesh");
     SceneRegister<ScenePinhole> regscenecamera("pinhole");
 
+    QLocale::setDefault(QLocale::C);
+
     try
     {
         QApplication app(argc, argv);

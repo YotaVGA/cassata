@@ -31,41 +31,47 @@ SceneMesh::SceneMesh(const QDomNode &node, Scene &scene)
 
         if (name == "polygon")
         {
+            QList<IVector3> points;
+
             for (QDomNode j = i.firstChild(); !j.isNull(); j = j.nextSibling())
             {
-                if (!i.isElement())
+                if (!j.isElement())
                     continue;
 
-                QDomElement elem = i.toElement();
+                QDomElement elem = j.toElement();
                 QString name = elem.tagName();
-
                 if (name == "point")
                 {
                     QStringList coords =
                         elem.text().split(' ', QString::SkipEmptyParts);
                     if (coords.size() != 3)
                         throw QString(
-                                "Error in %1.%2: Only tris are supported").
+                                "Error in %1.%2: the point must be 3D").
                             arg(j.lineNumber()).arg(j.columnNumber());
 
-                    QList<Float> points;
+                    Float point[3];
                     for (int k = 0; k < 3; k++)
                     {
                         bool valid;
-                        Float value = elem.text().toDouble(&valid);
+                        Float value = coords[k].toDouble(&valid);
 
                         if (!valid)
                             throw QString("Error in %1.%2: float error").
-                            arg(j.lineNumber()).arg(j.columnNumber());
+                                arg(j.lineNumber()).arg(j.columnNumber());
 
-                        points << value;
+                        point[k] = value;
                     }
 
-                    //TODO
-                    //polygons << Triangle(scene, points[0], points[1],
-                    //        points[2]);
+                    points << IVector3(point[0], point[1], point[2]);
                 }
             }
+
+            if (points.size() != 3)
+                throw QString("Error in %1.%2: only tris are supported").
+                    arg(i.lineNumber()).arg(i.columnNumber());
+
+            scene.element("geometry")["list"] << QSharedPointer<QObject>(new Triangle(scene,
+                    points[0], points[1], points[2]));
         }
     }
 }

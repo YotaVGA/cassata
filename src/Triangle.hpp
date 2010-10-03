@@ -22,7 +22,7 @@
 
 #include "Geometry.hpp"
 
-class Triangle : Geometry
+class Triangle : public Geometry
 {
     protected:
         IVector3 a, b, c;
