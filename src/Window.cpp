@@ -105,22 +105,22 @@ void Window::update()
 {
     QMutexLocker l(&mutex);
 
-    if (lastupdate)
-    {
-        timer.stop();
-        l.unlock();
-        refresh();
-        save();
-        return;
-    }
-
-    int ld = lastdraw, ll = lastline;
+    int ld = lastdraw;
     int w = width();
+    int h = lastdraw - lastline + 1;
 
     lastdraw = lastline;
 
     l.unlock();
-    repaint(0, ld, w, ll);
+    repaint(0, ld, w, h);
+    l.relock();
+
+    if (lastupdate)
+    {
+        timer.stop();
+        l.unlock();
+        save();
+    }
 }
 
 void Window::save()
