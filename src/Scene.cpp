@@ -102,7 +102,7 @@ const QColor Scene::pixel(int x, int y)
 
 const IFloat Scene::hit(const Ray &ray, IFloat *distance,
                         DifferentialSpace *ds, qint64 *object,
-                        const qint64 &skip, const qint64 &start)
+                        qint64 skip, qint64 start)
 {
     for (qint64 i = start; i < geometries.size(); i++)
     {
@@ -124,14 +124,67 @@ const IFloat Scene::hit(const Ray &ray, IFloat *distance,
 }
 
 const IFloat Scene::value(const DifferentialSpace &ds, const Quality &quality,
-                          const qint64 &object)
+                          qint64 object)
 {
     return geometries[object]->value(ds, quality);
 }
 
-const IFloat Scene::sample(const Ray &ray)
+const IFloat Scene::sample(const Ray &ray, const Quality &quality,
+                           qint64 skip)
 {
-    return 0;
+    if (quality.stopIteration())
+        return limits(ray);
+
+    IFloat hitp = 0;
+    IFloat distance = INFINITY;
+    IFloat val = 0;
+
+    IFloat temphit;
+    IFloat tempdistance;
+    qint64 i = 0;
+    DifferentialSpace ds;
+    while (temphit = hit(ray, &tempdistance, &ds, &i, skip, i),
+           i < geometries.size())
+    {
+        IFloat tempvalue = value(ds, quality, i);
+
+        using namespace boost::numeric::interval_lib;
+        using namespace compare::certain;
+
+        if (tempdistance < distance)
+        {
+            if (temphit == 1)
+            {
+                distance = tempdistance;
+                val = tempvalue;
+            }
+            else
+            {
+                distance = hull(distance, tempdistance);
+                val = tempvalue * temphit + hull(max(hitp - temphit, IFloat(0)),
+                        min(hitp, IFloat(1) - temphit)) * val;
+            }
+        }
+        else if (tempdistance > distance)
+        {
+            if (hitp == 1)
+                continue;
+
+            distance = hull(distance, tempdistance);
+            val = val * hitp + hull(max(temphit - hitp, IFloat(0)),
+                    min(temphit, IFloat(1) - hitp)) * tempvalue;
+        }
+        else
+        {
+            distance = hull(distance, tempdistance);
+            val = hull(temphit, max(hitp - temphit, IFloat(0))) * tempvalue +
+                  hull(hitp,    max(temphit - hitp, IFloat(0))) * val;
+        }
+
+        hitp = max(hitp, temphit);
+    }
+
+    return hitp * val;
 }
 
 int Scene::width() const

@@ -23,8 +23,18 @@
 class Quality
 {
     public:
-        inline const Quality decrease() const
+        inline const Quality decreased() const
         {
+        }
+
+        inline const int maxsubdivisions() const
+        {
+            return 0;
+        }
+
+        inline const bool stopIteration() const
+        {
+            return false;
         }
 };
 

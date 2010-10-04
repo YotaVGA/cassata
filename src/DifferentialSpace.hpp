@@ -30,9 +30,10 @@ class DifferentialSpace
         IAngle   n;
 
     public:
-        inline DifferentialSpace(const IVector3 &point, const IVector2 &uv,
-                                 const IAngle normal) : p(point), uvc(uv),
-                                                        n(normal)
+        inline DifferentialSpace(const IVector3 &point = IVector3(),
+                                 const IVector2 &uv = IVector2(),
+                                 const IAngle normal = IAngle()) :
+            p(point), uvc(uv), n(normal)
         {
         }
 

@@ -70,10 +70,10 @@ typedef boost::numeric::interval<Float, boost::numeric::interval_lib::
 // conformant to C99, but it can return an equivalent angle
 inline IFloat atan2(const IFloat &x, const IFloat &y)
 {
-    using namespace boost::numeric::interval_lib;
 
     IFloat angle = atan(y / x);
 
+    using namespace boost::numeric::interval_lib;
     using namespace compare::certain;
     
     if (x > 0.)

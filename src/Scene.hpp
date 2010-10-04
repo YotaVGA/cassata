@@ -51,18 +51,19 @@ class Scene
         void refineSolution();
         const QColor pixel(int x, int y);
         const IFloat hit(const Ray &ray, IFloat *distance,
-                DifferentialSpace *ds, qint64 *object,
-                const qint64 &skip = -1, const qint64 &start = 0);
+                         DifferentialSpace *ds, qint64 *object,
+                         qint64 skip = -1, qint64 start = 0);
         const IFloat value(const DifferentialSpace &ds,
-                const Quality &quality, const qint64 &object);
-        const IFloat sample(const Ray &ray);
+                           const Quality &quality, qint64 object);
+        const IFloat sample(const Ray &ray, const Quality &quality,
+                            qint64 skip);
 
         int width() const;
         int height() const;
         void setWidth(int width);
         void setHeight(int height);
 
-        inline const IFloat limit(const IVector3 &point) const
+        inline const IFloat limits(const Ray &ray) const
         {
             return lim;
         }
