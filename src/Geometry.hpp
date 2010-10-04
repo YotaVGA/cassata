@@ -23,6 +23,7 @@
 #include "Ray.hpp"
 #include "DifferentialSpace.hpp"
 #include "Scene.hpp"
+#include "Quality.hpp"
 
 class Geometry : public QObject
 {
@@ -36,7 +37,8 @@ class Geometry : public QObject
 
         virtual const IFloat hit(const Ray &ray, IFloat *distance,
                 DifferentialSpace *ds) const = 0;
-        virtual const IFloat value(const DifferentialSpace &ds) const = 0;
+        virtual const IFloat value(const DifferentialSpace &ds,
+                const Quality &quality) const = 0;
 
         virtual ~Geometry();
 };

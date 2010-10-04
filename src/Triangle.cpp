@@ -30,7 +30,8 @@ const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
     return 0;
 }
 
-const IFloat Triangle::value(const DifferentialSpace &ds) const
+const IFloat Triangle::value(const DifferentialSpace &ds,
+        const Quality &quality) const
 {
     return 0;
 }

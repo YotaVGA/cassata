@@ -32,7 +32,8 @@ class Triangle : public Geometry
 
         virtual const IFloat hit(const Ray &ray, IFloat *distance,
                 DifferentialSpace *ds) const;
-        virtual const IFloat value(const DifferentialSpace &ds) const;
+        virtual const IFloat value(const DifferentialSpace &ds,
+                const Quality &quality) const;
 };
 
 #endif

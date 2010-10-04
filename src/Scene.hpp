@@ -25,6 +25,7 @@
 #include "SceneElement.hpp"
 #include "Ray.hpp"
 #include "DifferentialSpace.hpp"
+#include "Quality.hpp"
 
 class Geometry;
 
@@ -50,7 +51,7 @@ class Scene
                 DifferentialSpace *ds, qint64 *object,
                 const qint64 &skip = -1, const qint64 &start = 0);
         const IFloat value(const DifferentialSpace &ds,
-                const qint64 &object);
+                const Quality &quality, const qint64 &object);
 
         int width() const;
         int height() const;

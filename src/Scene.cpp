@@ -92,8 +92,8 @@ const QColor Scene::pixel(int x, int y)
 }
 
 const IFloat Scene::hit(const Ray &ray, IFloat *distance,
-        DifferentialSpace *ds, qint64 *object,
-        const qint64 &skip, const qint64 &start)
+                        DifferentialSpace *ds, qint64 *object,
+                        const qint64 &skip, const qint64 &start)
 {
     for (qint64 i = start; i < geometries.size(); i++)
     {
@@ -114,10 +114,10 @@ const IFloat Scene::hit(const Ray &ray, IFloat *distance,
     return 0;
 }
 
-const IFloat Scene::value(const DifferentialSpace &ds,
-        const qint64 &object)
+const IFloat Scene::value(const DifferentialSpace &ds, const Quality &quality,
+                          const qint64 &object)
 {
-    return geometries[object]->value(ds);
+    return geometries[object]->value(ds, quality);
 }
 
 int Scene::width() const
