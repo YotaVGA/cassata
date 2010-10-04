@@ -18,7 +18,7 @@
 // 02110-1301  USA
 
 #ifndef RAY_HPP
-#define RAY_CPP
+#define RAY_HPP
 
 #include "Float.hpp"
 
@@ -49,6 +49,11 @@ class Ray
         inline const IFloat &lenght() const
         {
             return len;
+        }
+
+        inline void setLenght(const IFloat &lenght)
+        {
+            len = lenght;
         }
 };
 

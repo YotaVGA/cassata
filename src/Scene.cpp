@@ -75,6 +75,10 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
     
     camera = qSharedPointerDynamicCast<SceneCamera>(
             element("camera")["shader"][0]);
+
+    for (int i = 0; i < element("geometry")["list"].size(); i++)
+        geometries << qSharedPointerDynamicCast<Geometry>(
+                element("geometry")["list"][0]);
 }
 
 SceneList &Scene::element(const QString &name)
@@ -85,6 +89,35 @@ SceneList &Scene::element(const QString &name)
 const QColor Scene::pixel(int x, int y)
 {
     return camera->pixel(x, y);
+}
+
+const IFloat Scene::hit(const Ray &ray, IFloat *distance,
+        DifferentialSpace *ds, qint64 *object,
+        const qint64 &skip, const qint64 &start)
+{
+    for (qint64 i = start; i < geometries.size(); i++)
+    {
+        if (i == skip)
+            continue;
+
+        using namespace boost::numeric::interval_lib;
+        using namespace compare::certain;
+
+        IFloat h = geometries[i]->hit(ray, distance, ds);
+        if (h == 0)
+            continue;
+
+        *object = i;
+        return h;
+    }
+
+    return 0;
+}
+
+const IFloat Scene::value(const DifferentialSpace &ds,
+        const qint64 &object)
+{
+    return geometries[object]->value(ds);
 }
 
 int Scene::width() const

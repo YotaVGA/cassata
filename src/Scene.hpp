@@ -23,6 +23,10 @@
 #include <QtXml>
 #include <QtGui>
 #include "SceneElement.hpp"
+#include "Ray.hpp"
+#include "DifferentialSpace.hpp"
+
+class Geometry;
 
 class SceneCamera;
 
@@ -35,12 +39,18 @@ class Scene
         QDomDocument scenedoc;
         QHash<QString, SceneList> lists;
         QSharedPointer<SceneCamera> camera;
+        QList<QSharedPointer<Geometry> > geometries;
 
     public:
         Scene(const QString &filename);
 
         SceneList &element(const QString &name);
         const QColor pixel(int x, int y);
+        const IFloat hit(const Ray &ray, IFloat *distance,
+                DifferentialSpace *ds, qint64 *object,
+                const qint64 &skip = -1, const qint64 &start = 0);
+        const IFloat value(const DifferentialSpace &ds,
+                const qint64 &object);
 
         int width() const;
         int height() const;
@@ -75,5 +85,6 @@ template <typename T> class SceneRegister : public BaseSceneRegister
 };
 
 #include "SceneCamera.hpp"
+#include "Geometry.hpp"
 
 #endif
