@@ -19,7 +19,8 @@
 
 #include "SceneMesh.hpp"
 
-SceneMesh::SceneMesh(const QDomNode &node, Scene &scene)
+SceneMesh::SceneMesh(const QDomNode &node, Scene &scene,
+        QSharedPointer<SceneElement> &object) : SceneElement(object)
 {
     for (QDomNode i = node.firstChild(); !i.isNull(); i = i.nextSibling())
     {

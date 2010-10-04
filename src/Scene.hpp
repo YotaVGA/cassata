@@ -63,7 +63,8 @@ class BaseSceneRegister
 {
     public:
         virtual SceneElement *
-            newClass(const QDomNode &node, Scene &scene) const = 0;
+            newClass(const QDomNode &node, Scene &scene,
+                     QSharedPointer<SceneElement> &object) const = 0;
 
         virtual ~BaseSceneRegister();
 };
@@ -79,9 +80,10 @@ template <typename T> class SceneRegister : public BaseSceneRegister
         }
 
         virtual SceneElement *
-            newClass(const QDomNode &node, Scene &scene) const
+            newClass(const QDomNode &node, Scene &scene,
+                     QSharedPointer<SceneElement> &object) const
         {
-            return new T(node, scene);
+            return new T(node, scene, object);
         }
 };
 

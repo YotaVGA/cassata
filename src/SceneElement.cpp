@@ -19,18 +19,13 @@
 
 #include "SceneElement.hpp"
 
-SceneElement::SceneElement()
+SceneElement::SceneElement(QSharedPointer<SceneElement> &object)
 {
-    self = QSharedPointer<SceneElement>(this, &QObject::deleteLater);
+    object = QSharedPointer<SceneElement>(this);
 }
 
 void SceneElement::initialize()
 {
-}
-
-QSharedPointer<SceneElement> SceneElement::pointer()
-{
-    return self;
 }
 
 SceneElement::~SceneElement()

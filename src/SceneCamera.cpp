@@ -19,7 +19,9 @@
 
 #include "SceneCamera.hpp"
 
-SceneCamera::SceneCamera(const QDomNode &node, Scene &scene) : refscene(scene)
+SceneCamera::SceneCamera(const QDomNode &node, Scene &scene,
+        QSharedPointer<SceneElement> &object) : SceneElement(object),
+                                                refscene(scene)
 {
-    scene.element("camera")["shader"] << self;
+    scene.element("camera")["shader"] << object;
 }

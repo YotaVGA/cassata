@@ -19,8 +19,9 @@
 
 #include "ScenePinhole.hpp"
 
-ScenePinhole::ScenePinhole(const QDomNode &node, Scene &scene) :
-    SceneCamera(node, scene)
+ScenePinhole::ScenePinhole(const QDomNode &node, Scene &scene,
+        QSharedPointer<SceneElement> &object) :
+    SceneCamera(node, scene, object)
 {
 }
 

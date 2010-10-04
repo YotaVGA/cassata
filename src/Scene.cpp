@@ -54,8 +54,8 @@ Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
                 arg(i.lineNumber()).arg(i.columnNumber()).
                 arg(elem.tagName());
 
-        QSharedPointer<SceneElement> shader =
-            shaderiterator.value()->newClass(i, *this)->pointer();
+        QSharedPointer<SceneElement> shader;
+        shaderiterator.value()->newClass(i, *this, shader);
         shaders << shader;
         QString name = elem.attribute("id");
         if (!name.isEmpty())

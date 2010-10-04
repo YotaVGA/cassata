@@ -26,7 +26,8 @@
 class SceneMesh : public SceneElement
 {
     public:
-        SceneMesh(const QDomNode &node, Scene &scene);
+        SceneMesh(const QDomNode &node, Scene &scene,
+                QSharedPointer<SceneElement> &object);
 };
 
 #endif

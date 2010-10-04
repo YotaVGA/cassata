@@ -24,15 +24,10 @@
 
 class SceneElement : public QObject
 {
-    protected:
-        QSharedPointer<SceneElement> self;
-
     public:
-
-        SceneElement();
+        SceneElement(QSharedPointer<SceneElement> &object);
 
         virtual void initialize();
-        virtual QSharedPointer<SceneElement> pointer();
 
         virtual ~SceneElement();
 };

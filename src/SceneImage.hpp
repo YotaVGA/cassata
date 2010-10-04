@@ -25,7 +25,8 @@
 class SceneImage : public SceneElement
 {
     public:
-        SceneImage(const QDomNode &node, Scene &scene);
+        SceneImage(const QDomNode &node, Scene &scene,
+                QSharedPointer<SceneElement> &object);
 };
 
 #endif
