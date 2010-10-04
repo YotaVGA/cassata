@@ -66,6 +66,9 @@ static void render(Window *win, Scene &scene)
     QElapsedTimer timer;
     timer.start();
 
+    scene.firstSolution();
+    scene.refineSolution();
+
     for (int y = 0; y < scene.height(); y++)
     {
         for (int x = 0; x < scene.width(); x++)

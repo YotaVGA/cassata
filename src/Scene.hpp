@@ -37,6 +37,7 @@ class Scene
 {
     protected:
         int w, h;
+        IFloat lim;
         QDomDocument scenedoc;
         QHash<QString, SceneList> lists;
         QSharedPointer<SceneCamera> camera;
@@ -46,17 +47,25 @@ class Scene
         Scene(const QString &filename);
 
         SceneList &element(const QString &name);
+        void firstSolution();
+        void refineSolution();
         const QColor pixel(int x, int y);
         const IFloat hit(const Ray &ray, IFloat *distance,
                 DifferentialSpace *ds, qint64 *object,
                 const qint64 &skip = -1, const qint64 &start = 0);
         const IFloat value(const DifferentialSpace &ds,
                 const Quality &quality, const qint64 &object);
+        const IFloat sample(const Ray &ray);
 
         int width() const;
         int height() const;
         void setWidth(int width);
         void setHeight(int height);
+
+        inline const IFloat limit(const IVector3 &point) const
+        {
+            return lim;
+        }
 };
 
 class BaseSceneRegister

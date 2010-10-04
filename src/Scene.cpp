@@ -86,6 +86,15 @@ SceneList &Scene::element(const QString &name)
     return lists[name];
 }
 
+void Scene::firstSolution()
+{
+    lim = IFloat(0, 1000);
+}
+
+void Scene::refineSolution()
+{
+}
+
 const QColor Scene::pixel(int x, int y)
 {
     return camera->pixel(x, y);
@@ -118,6 +127,11 @@ const IFloat Scene::value(const DifferentialSpace &ds, const Quality &quality,
                           const qint64 &object)
 {
     return geometries[object]->value(ds, quality);
+}
+
+const IFloat Scene::sample(const Ray &ray)
+{
+    return 0;
 }
 
 int Scene::width() const
