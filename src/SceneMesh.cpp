@@ -70,8 +70,9 @@ SceneMesh::SceneMesh(const QDomNode &node, Scene &scene)
                 throw QString("Error in %1.%2: only tris are supported").
                     arg(i.lineNumber()).arg(i.columnNumber());
 
-            scene.element("geometry")["list"] << QSharedPointer<QObject>(new Triangle(scene,
-                    points[0], points[1], points[2]));
+            scene.element("geometry")["list"] <<
+                QSharedPointer<QObject>(new Triangle(scene, points[0],
+                                                     points[1], points[2]));
         }
     }
 }
