@@ -27,12 +27,17 @@ class Quality
         {
         }
 
-        inline const int maxsubdivisions() const
+        inline int maxsubdivisions() const
         {
             return 0;
         }
 
-        inline const bool stopIteration() const
+        inline bool stopIteration() const
+        {
+            return false;
+        }
+
+        inline bool increase()
         {
             return false;
         }

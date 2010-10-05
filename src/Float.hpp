@@ -126,10 +126,11 @@ inline const IFloat  ei_cos (const IFloat &x) {return cos(x);}
 }
 }
 
-typedef Eigen::Matrix<IFloat, 2, 1> IVector2;
-typedef Eigen::Matrix<IFloat, 3, 1> IVector3;
-typedef Eigen::Matrix<IFloat, 4, 1> IVector4;
-typedef Eigen::Matrix<IFloat, 4, 4> IMatrix4;
-typedef Eigen::AngleAxis<IFloat> IAngle;
+typedef Eigen::Matrix<IFloat, 2, 1>        IVector2;
+typedef Eigen::Matrix<IFloat, 3, 1>        IVector3;
+typedef Eigen::Matrix<IFloat, 4, 1>        IVector4;
+typedef Eigen::Matrix<IFloat, 4, 4>        IMatrix4;
+typedef Eigen::ParametrizedLine<IFloat, 3> ILine;
+typedef Eigen::Quaternion<IFloat>          IAngle;
 
 #endif

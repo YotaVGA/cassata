@@ -25,6 +25,10 @@ ScenePinhole::ScenePinhole(const QDomNode &node, Scene &scene,
 {
 }
 
+void ScenePinhole::initialize()
+{
+}
+
 const QColor ScenePinhole::pixel(int x, int y)
 {
     return Qt::white;

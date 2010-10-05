@@ -28,6 +28,8 @@ class ScenePinhole : public SceneCamera
         ScenePinhole(const QDomNode &node, Scene &scene,
                 QSharedPointer<SceneElement> &object);
 
+        virtual void initialize();
+
         virtual const QColor pixel(int x, int y);
 };
 

@@ -25,25 +25,18 @@
 class Ray
 {
     protected:
-        IVector3 v;
-        IAngle   a;
-        IFloat   len;
+        ILine  l;
+        IFloat len;
 
     public:
-        inline Ray(const IVector3 &origin, const IAngle &direction,
-                   const IFloat &lenght = INF) : v(origin), a(direction),
-                                                 len(lenght)
+        inline Ray(ILine &line, const IFloat &lenght = INF) : l(line),
+                                                              len(lenght)
         {
         }
 
-        inline const IVector3 &origin() const
+        inline const ILine &line() const
         {
-            return v;
-        }
-
-        inline const IAngle &direction() const
-        {
-            return a;
+            return l;
         }
 
         inline const IFloat &lenght() const

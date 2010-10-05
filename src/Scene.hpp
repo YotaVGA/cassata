@@ -67,6 +67,11 @@ class Scene
         {
             return lim;
         }
+
+        inline const Quality defaultQuality() const
+        {
+            return Quality();
+        }
 };
 
 class BaseSceneRegister
