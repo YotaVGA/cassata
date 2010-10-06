@@ -30,7 +30,7 @@ Window::Window(int x, int y) : lastdraw(0), lastline(0),
     resize(x, y);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(100);
+    timer.start(500);
 }
 
 void Window::resize(int x, int y)

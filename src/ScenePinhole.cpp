@@ -23,13 +23,74 @@ ScenePinhole::ScenePinhole(const QDomNode &node, Scene &scene,
         QSharedPointer<SceneElement> &object) :
     SceneCamera(node, scene, object)
 {
+    sceneptr = &scene;
 }
 
 void ScenePinhole::initialize()
 {
+    int w = sceneptr->width(),
+        h = sceneptr->height();
+
+    using namespace ifloat;
+
+    if (w > h)
+    {
+        S  = div<IFloat>(2, h);
+        Tx = div<IFloat>(w, h);
+        Ty = IFloat(1);
+    }
+    else
+    {
+        S  = div<IFloat>(2, w);
+        Ty = div<IFloat>(h, w);
+        Tx = IFloat(1);
+    }
+
+    q = sceneptr->defaultQuality();
 }
 
 const QColor ScenePinhole::pixel(int x, int y)
 {
-    return Qt::white;
+    IFloat value = IFloat(-INFINITY, INFINITY);
+
+    for (int i = 0; i <= q.maxsubdivisionindex(); i++)
+    {
+        Quality quality = q;
+
+        for (int qsteps = 0; qsteps < quality.quality_steps(); qsteps++)
+        {
+            IFloat tempval = iterate(IFloat(x, x + 1), IFloat(y, y + 1),
+                                     quality.subdivisions(i), quality);
+
+            using namespace ifloat;
+
+            Float w = width(tempval);
+
+            if (w >= width(value))
+                continue;
+
+            value = tempval;
+
+            if (w < quality.tollerance())
+                goto gotvalue;
+
+            quality.increase();
+        }
+    }
+gotvalue:
+
+    using namespace std;
+
+    int qvalue = max(min((int)round(median(value * IFloat(255))), 255), 0);
+    return QColor(qvalue, qvalue, qvalue);
+}  
+
+const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int steps,
+                                   const Quality &quality)
+{
+    if (steps)
+    {
+    }
+
+    return 1;
 }

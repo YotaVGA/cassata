@@ -24,12 +24,19 @@
 
 class ScenePinhole : public SceneCamera
 {
+    protected:
+        Scene *sceneptr;
+        IFloat S, Tx, Ty;
+        Quality q;
+
+        const IFloat iterate(IFloat x, IFloat y, int steps,
+                             const Quality &quality);
+
     public:
         ScenePinhole(const QDomNode &node, Scene &scene,
                 QSharedPointer<SceneElement> &object);
 
         virtual void initialize();
-
         virtual const QColor pixel(int x, int y);
 };
 

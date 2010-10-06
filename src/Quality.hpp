@@ -27,9 +27,14 @@ class Quality
         {
         }
 
-        inline int maxsubdivisions() const
+        inline int maxsubdivisionindex() const
         {
-            return 0;
+            return 3;
+        }
+
+        inline int subdivisions(int subindex) const
+        {
+            return subindex;
         }
 
         inline bool stopIteration() const
@@ -40,6 +45,16 @@ class Quality
         inline bool increase()
         {
             return false;
+        }
+        
+        inline int quality_steps() const
+        {
+            return 1;
+        }
+
+        inline Float tollerance() const
+        {
+            return ifloat::div<IFloat>(1, 2 * 256).upper();
         }
 };
 

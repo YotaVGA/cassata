@@ -66,6 +66,8 @@ typedef boost::numeric::interval<Float, boost::numeric::interval_lib::
 #define PI_H (pi_half<IFloat>())
 #define INF  (std::numeric_limits<Float>::infinity())
 
+namespace ifloat         = boost::numeric::interval_lib;
+
 // NOTE: This work well, but for optimizzation reasons it isn't exactly
 // conformant to C99, but it can return an equivalent angle
 inline IFloat atan2(const IFloat &x, const IFloat &y)
@@ -73,8 +75,8 @@ inline IFloat atan2(const IFloat &x, const IFloat &y)
 
     IFloat angle = atan(y / x);
 
-    using namespace boost::numeric::interval_lib;
-    using namespace compare::certain;
+    using namespace ifloat;
+    using namespace ifloat::compare::certain;
     
     if (x > 0.)
         return angle;
