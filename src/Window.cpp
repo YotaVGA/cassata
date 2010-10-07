@@ -22,8 +22,8 @@
 
 using namespace std;
 
-Window::Window(int x, int y) : lastdraw(0), lastline(0),
-                               timer(this), lastupdate(false)
+Window::Window(int x, int y) : lastupdate(false), lastdraw(0),
+                               lastline(0), timer(this)
 {
     setWindowTitle("Cassata prototype");
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);

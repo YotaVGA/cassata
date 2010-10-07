@@ -26,7 +26,7 @@ BaseSceneRegister::~BaseSceneRegister()
 {
 }
 
-Scene::Scene(const QString &filename) : scenedoc("scene"), w(800), h(600)
+Scene::Scene(const QString &filename) : w(800), h(600), scenedoc("scene")
 {
     QFile file(filename);
 

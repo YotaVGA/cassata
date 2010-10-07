@@ -25,6 +25,7 @@ class Quality
     public:
         inline const Quality decreased() const
         {
+            return Quality();
         }
 
         inline int maxsubdivisionindex() const
