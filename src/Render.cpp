@@ -20,12 +20,11 @@
 #include <iostream>
 #include "Render.hpp"
 
-extern bool quit;
-extern QMutex quitmutex;
-
 using namespace std;
 
-QString showTime(qint64 ms);
+Render::Render() : bquit(false)
+{
+}
 
 void Render::render(Window *win, Scene &scene)
 {
@@ -45,10 +44,10 @@ void Render::render(Window *win, Scene &scene)
 
         for (int x = 0; x < scene.width(); x++)
         {
-            QMutexLocker ml(&quitmutex);
-            if (quit)
+            QMutexLocker m(this);
+            if (bquit)
                 return;
-            ml.unlock();
+            m.unlock();
 
             win->draw(x, y, scene.pixel(x, y));
         }
@@ -60,4 +59,41 @@ void Render::render(Window *win, Scene &scene)
     cout << "Rendered!\n";
     cout << "Rendering time: " <<
         showTime(timer.elapsed()).toStdString() << endl;
+}
+
+QString Render::showTime(qint64 ms)
+{
+    QString time;
+
+    qint64 s  = ms / 1000;
+    qint64 m  = s  / 60;
+    qint64 h  = m  / 60;
+    qint64 d  = h  / 24;
+    ms %= 1000;
+    s  %= 60;
+    m  %= 60;
+    h  %= 24;
+
+    if (!s and !m and !h and !d)
+        time = QString("%1ms").arg(ms);
+    else if (!m and !h and !d)
+        time = QString("%1.%2s").arg(s).arg(ms, 3, 10, QChar('0'));
+    else if (!h and !d)
+        time = QString("%1:%2.%3").arg(m, 2, 10, QChar('0')).
+            arg(s, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
+    else if (!d)
+        time = QString("%1:%2:%3.%4").arg(h, 2, 10, QChar('0')).
+            arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).
+            arg(ms, 3, 10, QChar('0'));
+    else
+        time = QString("%1d %2:%3:%4.%5").arg(d).arg(h, 2, 10, QChar('0')).
+            arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).
+            arg(ms, 3, 10, QChar('0'));
+
+    return time;
+}
+
+void Render::quit()
+{
+    bquit = true;
 }

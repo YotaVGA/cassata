@@ -23,12 +23,19 @@
 #include "Window.hpp"
 #include "Scene.hpp"
 
-class Render : public QObject
+class Render : public QObject, public QMutex
 {
     Q_OBJECT
 
+    protected:
+        bool bquit;
+
     public:
+        Render();
+
         void render(Window *win, Scene &scene);
+        QString showTime(qint64 ms);
+        void quit();
 
     signals:
         void changeTitle(const QString &string);

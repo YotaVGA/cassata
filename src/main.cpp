@@ -30,45 +30,9 @@
 
 using namespace std;
 
-bool quit = false;
-QMutex quitmutex;
-
-QString showTime(qint64 ms)
+void render(Render *render, Window *win, Scene &scene)
 {
-    QString time;
-
-    qint64 s  = ms / 1000;
-    qint64 m  = s  / 60;
-    qint64 h  = m  / 60;
-    qint64 d  = h  / 24;
-    ms %= 1000;
-    s  %= 60;
-    m  %= 60;
-    h  %= 24;
-
-    if (!s and !m and !h and !d)
-        time = QString("%1ms").arg(ms);
-    else if (!m and !h and !d)
-        time = QString("%1.%2s").arg(s).arg(ms, 3, 10, QChar('0'));
-    else if (!h and !d)
-        time = QString("%1:%2.%3").arg(m, 2, 10, QChar('0')).
-            arg(s, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
-    else if (!d)
-        time = QString("%1:%2:%3.%4").arg(h, 2, 10, QChar('0')).
-            arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).
-            arg(ms, 3, 10, QChar('0'));
-    else
-        time = QString("%1d %2:%3:%4.%5").arg(d).arg(h, 2, 10, QChar('0')).
-            arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).
-            arg(ms, 3, 10, QChar('0'));
-
-    return time;
-}
-
-void render(Window *win, Scene &scene)
-{
-    Render render;
-    render.render(win, scene);
+    render->render(win, scene);
 }
 
 int main(int argc, char **argv)
@@ -88,24 +52,26 @@ int main(int argc, char **argv)
         if (args.length() != 3)
             throw QString("Two arguments are required");
 
+        Render r;
+
         QElapsedTimer timer;
         timer.start();
 
         Scene scene(args.at(1));
 
         cout << "Parsing time: " <<
-            showTime(timer.elapsed()).toStdString() << endl;
+            r.showTime(timer.elapsed()).toStdString() << endl;
 
         Window win;
         win.resize(scene.width(), scene.height());
         win.show();
         win.setFileName(args.at(2));
-        QFuture<void> retthread = QtConcurrent::run(render, &win, scene);
+        QFuture<void> retthread = QtConcurrent::run(render, &r, &win, scene);
 
         int ret = app.exec();
-        quitmutex.lock();
-        quit = true;
-        quitmutex.unlock();
+        r.lock();
+        r.quit();
+        r.unlock();
         retthread.waitForFinished();
         return ret;
     }
