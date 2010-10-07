@@ -29,6 +29,16 @@ class Render : public QObject, public QMutex
 
     protected:
         bool bquit;
+        int y;
+        Scene *s;
+
+        inline QString statistics(const Scene &scene)
+        {
+            return QString("Correct: %1, Incert: %2, Incorrect %3").
+                   arg(scene.numberCorrectPixels()).
+                   arg(scene.numberIncertPixels()).
+                   arg(scene.numberIncorrectPixels());
+        }
 
     public:
         Render();
@@ -39,6 +49,9 @@ class Render : public QObject, public QMutex
 
     signals:
         void changeTitle(const QString &string);
+
+    public slots:
+        void updateRenderingTitleStep3();
 };
 
 #endif

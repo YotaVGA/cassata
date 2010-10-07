@@ -51,6 +51,9 @@ class Window : public QWidget
         void updateImage();
         void save();
         void refresh();
+
+    signals:
+        void timeout();
 };
 
 #endif

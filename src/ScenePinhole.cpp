@@ -52,10 +52,13 @@ void ScenePinhole::initialize()
 const QColor ScenePinhole::pixel(int x, int y)
 {
     IFloat value = IFloat(-INFINITY, INFINITY);
+    Quality quality;
+    Float w;
+    bool single = false;
 
     for (int i = 0; i <= q.maxsubdivisionindex(); i++)
     {
-        Quality quality = q;
+        quality = q;
 
         for (int qsteps = 0; qsteps < quality.quality_steps(); qsteps++)
         {
@@ -64,12 +67,16 @@ const QColor ScenePinhole::pixel(int x, int y)
 
             using namespace ifloat;
 
-            Float w = width(tempval);
+            w = width(tempval);
 
             if (w >= width(value))
                 continue;
 
             value = tempval;
+
+            single = sceneptr->singleValuePixel(value);
+            if (single)
+                goto gotvalue;
 
             if (w < quality.tollerance())
                 goto gotvalue;
@@ -79,9 +86,11 @@ const QColor ScenePinhole::pixel(int x, int y)
     }
 gotvalue:
 
+    sceneptr->newPixelStatistics(value, quality.tollerance(), w, single);
+
     using namespace std;
 
-    int qvalue = max(min((int)round(median(value * IFloat(255))), 255), 0);
+    int qvalue = max(min((int)round(median(value * IFloat(256))), 255), 0);
     return QColor(qvalue, qvalue, qvalue);
 }  
 

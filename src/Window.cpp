@@ -103,6 +103,8 @@ void Window::keyPressEvent(QKeyEvent *event)
 
 void Window::updateImage()
 {
+    emit timeout();
+
     QMutexLocker l(&mutex);
 
     int ld = lastdraw;

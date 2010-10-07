@@ -36,6 +36,7 @@ typedef QHash<QString, QList<QSharedPointer<QObject> > > SceneList;
 class Scene
 {
     protected:
+        int correct, incert, incorrect;
         int w, h;
         IFloat lim;
         QDomDocument scenedoc;
@@ -71,6 +72,46 @@ class Scene
         inline const Quality defaultQuality() const
         {
             return Quality();
+        }
+
+        inline int numberCorrectPixels() const
+        {
+            return correct;
+        }
+
+        inline int numberIncertPixels() const
+        {
+            return incert;
+        }
+
+        inline int numberIncorrectPixels() const
+        {
+            return incorrect;
+        }
+
+        inline bool singleValuePixel(const IFloat &value)
+        {
+            using namespace std;
+
+            int a = max(min(
+                        (int)round((value * IFloat(256)).upper()), 255), 0),
+                b = max(min(
+                        (int)round((value * IFloat(256)).lower()), 255), 0);
+            if (a != b)
+                return false;
+            return true;
+        }
+
+        inline void newPixelStatistics(const IFloat &value,
+                                       const Float &tollerance,
+                                       const Float &w, bool single)
+        {
+            if (single)
+                correct++;
+            else if (w > tollerance)
+                incorrect++;
+            else
+                incert++;
         }
 };
 

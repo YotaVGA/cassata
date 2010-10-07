@@ -30,9 +30,9 @@
 
 using namespace std;
 
-void render(Render *render, Window *win, Scene &scene)
+void render(Render *render, Window *win, Scene *scene)
 {
-    render->render(win, scene);
+    render->render(win, *scene);
 }
 
 int main(int argc, char **argv)
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
         win.resize(scene.width(), scene.height());
         win.show();
         win.setFileName(args.at(2));
-        QFuture<void> retthread = QtConcurrent::run(render, &r, &win, scene);
+        QFuture<void> retthread = QtConcurrent::run(render, &r, &win, &scene);
 
         int ret = app.exec();
         r.lock();
