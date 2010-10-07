@@ -20,8 +20,8 @@
 #include "ScenePinhole.hpp"
 
 ScenePinhole::ScenePinhole(const QDomNode &node, Scene &scene,
-        QSharedPointer<SceneElement> &object) :
-    SceneCamera(node, scene, object)
+                           QSharedPointer<SceneElement> &object) :
+    SceneCamera(node, scene, object), o(0, 0, 0)
 {
     sceneptr = &scene;
 }
@@ -90,7 +90,29 @@ const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int steps,
 {
     if (steps)
     {
+        IFloat value;
+        std::pair<IFloat, IFloat> xp = bisect(x),
+                                  yp = bisect(y);
+        IFloat wx1 = IFloat(xp.first.upper())  - IFloat(xp.first.lower()),
+               wx2 = IFloat(xp.second.upper()) - IFloat(xp.second.lower()),
+               wy1 = IFloat(yp.first.upper())  - IFloat(yp.first.lower()),
+               wy2 = IFloat(yp.second.upper()) - IFloat(yp.second.lower());
+        IFloat v1 = iterate(xp.first,  yp.first,  steps - 1, quality),
+               v2 = iterate(xp.first,  yp.second, steps - 1, quality),
+               v3 = iterate(xp.second, yp.first,  steps - 1, quality),
+               v4 = iterate(xp.second, yp.second, steps - 1, quality);
+
+        IFloat wv1 = v1 * wx1 * wy1,
+               wv2 = v2 * wx1 * wy2,
+               wv3 = v3 * wx2 * wy1,
+               wv4 = v4 * wx2 * wy2;
+        IFloat wx = IFloat(x.upper()) - IFloat(x.lower()),
+               wy = IFloat(y.upper()) - IFloat(y.lower());
+
+        return (wv1 + wv2 + wv3 + wv4) / (wx * wy);
     }
 
-    return 1;
+    IVector3 d(Tx - S * x, Ty - S * y, 1);
+    d.normalize();
+    return sceneptr->sample(Ray(ILine(o, d)), quality);
 }

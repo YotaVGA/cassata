@@ -29,8 +29,8 @@ class Ray
         IFloat len;
 
     public:
-        inline Ray(ILine &line, const IFloat &lenght = INF) : l(line),
-                                                              len(lenght)
+        inline Ray(const ILine &line, const IFloat &lenght = INF) : l(line),
+                                                                    len(lenght)
         {
         }
 
