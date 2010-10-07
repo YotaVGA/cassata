@@ -17,40 +17,21 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#ifndef WINDOW_HPP
-#define WINDOW_HPP
+#ifndef RENDER_H
+#define RENDER_H
 
-#include <QtGui>
+#include "Window.hpp"
+#include "Scene.hpp"
 
-class Window : public QWidget
+class Render : public QObject
 {
     Q_OBJECT
 
-    private:
-        bool lastupdate;
-        int lastdraw, lastline;
-        QString filename;
-        QSharedPointer<QImage> image;
-        QTimer timer;
-        QMutex mutex;
-
     public:
-        Window(int x = 800, int y = 600);
+        void render(Window *win, Scene &scene);
 
-        void resize(int x, int y);
-        void draw(int x, int y, QColor color);
-        void end();
-        const QString &fileName();
-        void setFileName(const QString &str);
-
-    protected:
-        virtual void paintEvent(QPaintEvent *event);
-        virtual void keyPressEvent(QKeyEvent *event);
-
-    public slots:
-        void updateImage();
-        void save();
-        void refresh();
+    signals:
+        void changeTitle(const QString &string);
 };
 
 #endif

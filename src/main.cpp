@@ -26,13 +26,14 @@
 #include "SceneImage.hpp"
 #include "SceneMesh.hpp"
 #include "ScenePinhole.hpp"
+#include "Render.hpp"
 
 using namespace std;
 
-static bool quit = false;
-static QMutex mutex;
+bool quit = false;
+QMutex quitmutex;
 
-static QString showTime(qint64 ms)
+QString showTime(qint64 ms)
 {
     QString time;
 
@@ -64,31 +65,10 @@ static QString showTime(qint64 ms)
     return time;
 }
 
-static void render(Window *win, Scene &scene)
+void render(Window *win, Scene &scene)
 {
-    QElapsedTimer timer;
-    timer.start();
-
-    scene.firstSolution();
-    scene.refineSolution();
-
-    for (int y = 0; y < scene.height(); y++)
-    {
-        for (int x = 0; x < scene.width(); x++)
-        {
-            QMutexLocker ml(&mutex);
-            if (quit)
-                return;
-            ml.unlock();
-
-            win->draw(x, y, scene.pixel(x, y));
-        }
-    }
-    win->end();
-
-    cout << "Rendered!\n";
-    cout << "Rendering time: " <<
-        showTime(timer.elapsed()).toStdString() << endl;
+    Render render;
+    render.render(win, scene);
 }
 
 int main(int argc, char **argv)
@@ -123,9 +103,9 @@ int main(int argc, char **argv)
         QFuture<void> retthread = QtConcurrent::run(render, &win, scene);
 
         int ret = app.exec();
-        mutex.lock();
+        quitmutex.lock();
         quit = true;
-        mutex.unlock();
+        quitmutex.unlock();
         retthread.waitForFinished();
         return ret;
     }

@@ -25,11 +25,11 @@ using namespace std;
 Window::Window(int x, int y) : lastupdate(false), lastdraw(0),
                                lastline(0), timer(this)
 {
-    setWindowTitle("Cassata prototype");
+    setWindowTitle("Cassata prototype - Parsing");
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     resize(x, y);
 
-    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+    connect(&timer, SIGNAL(timeout()), this, SLOT(updateImage()));
     timer.start(500);
 }
 
@@ -101,7 +101,7 @@ void Window::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void Window::update()
+void Window::updateImage()
 {
     QMutexLocker l(&mutex);
 
