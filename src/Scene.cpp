@@ -120,6 +120,7 @@ const IFloat Scene::hit(const Ray &ray, IFloat *distance,
         return h;
     }
 
+    *object = geometries.size();
     return 0;
 }
 

@@ -29,6 +29,9 @@
 
 using namespace std;
 
+static bool quit = false;
+static QMutex mutex;
+
 static QString showTime(qint64 ms)
 {
     QString time;
@@ -72,7 +75,14 @@ static void render(Window *win, Scene &scene)
     for (int y = 0; y < scene.height(); y++)
     {
         for (int x = 0; x < scene.width(); x++)
+        {
+            QMutexLocker ml(&mutex);
+            if (quit)
+                return;
+            ml.unlock();
+
             win->draw(x, y, scene.pixel(x, y));
+        }
     }
     win->end();
 
@@ -110,9 +120,14 @@ int main(int argc, char **argv)
         win.resize(scene.width(), scene.height());
         win.show();
         win.setFileName(args.at(2));
-        QtConcurrent::run(render, &win, scene);
+        QFuture<void> retthread = QtConcurrent::run(render, &win, scene);
 
-        return app.exec();
+        int ret = app.exec();
+        mutex.lock();
+        quit = true;
+        mutex.unlock();
+        retthread.waitForFinished();
+        return ret;
     }
     catch (const QString &s)
     {
