@@ -134,5 +134,6 @@ typedef Eigen::Matrix<IFloat, 4, 1>        IVector4;
 typedef Eigen::Matrix<IFloat, 4, 4>        IMatrix4;
 typedef Eigen::ParametrizedLine<IFloat, 3> ILine;
 typedef Eigen::Quaternion<IFloat>          IAngle;
+typedef Eigen::Hyperplane<IFloat, 3>       IPlane;
 
 #endif

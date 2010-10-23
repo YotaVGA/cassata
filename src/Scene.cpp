@@ -110,7 +110,7 @@ const IFloat Scene::hit(const Ray &ray, IFloat *distance,
         if (i == skip)
             continue;
 
-        using namespace boost::numeric::interval_lib;
+        using namespace ifloat;
         using namespace compare::certain;
 
         IFloat h = geometries[i]->hit(ray, distance, ds);
@@ -145,8 +145,8 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
     IFloat tempdistance;
     qint64 i = 0;
     DifferentialSpace ds;
-    while (temphit = hit(ray, &tempdistance, &ds, &i, skip, i),
-           i < geometries.size())
+    for (temphit = hit(ray, &tempdistance, &ds, &i, skip, i);
+         i < geometries.size(); i++)
     {
         IFloat tempvalue = value(ds, quality, i);
 

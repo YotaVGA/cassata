@@ -92,7 +92,7 @@ gotvalue:
 
     int qvalue = max(min((int)round(median(value * IFloat(256))), 255), 0);
     return QColor(qvalue, qvalue, qvalue);
-}  
+}
 
 const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int steps,
                                    const Quality &quality)
@@ -121,7 +121,7 @@ const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int steps,
         return (wv1 + wv2 + wv3 + wv4) / (wx * wy);
     }
 
-    IVector3 d(Tx - S * x, Ty - S * y, 1);
+    IVector3 d(Tx - S * x, Ty - S * y, -1);
     d.normalize();
     return sceneptr->sample(Ray(ILine(o, d)), quality);
 }

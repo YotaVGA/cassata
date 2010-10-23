@@ -20,18 +20,28 @@
 #include "Triangle.hpp"
 
 Triangle::Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc) :
-    Geometry(scene), a(pa), b(pb), c(pc)
+    Geometry(scene), a(pa), b(pb), c(pc), plane(IPlane::Through(pa, pb, pc))
 {
 }
 
 const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
         DifferentialSpace *ds) const
 {
-    return 0;
+    *distance = ILine(ray.line()).intersection(plane);
+
+    using namespace ifloat;
+    using namespace compare::certain;
+
+    *ds = DifferentialSpace(a);
+
+    if (*distance < 0 || *distance > ray.lenght())
+        return 0;
+
+    return 1;
 }
 
 const IFloat Triangle::value(const DifferentialSpace &ds,
         const Quality &quality) const
 {
-    return 0;
+    return 1;
 }
