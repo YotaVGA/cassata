@@ -27,8 +27,10 @@
 #include <QtGui>
 #include <cmath>
 #include <boost/numeric/interval.hpp>
+#include <boost/numeric/interval/compare/tribool.hpp>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <Eigen/LU>
 #include <crlibm.h>
 
 typedef double Float;
@@ -66,7 +68,8 @@ typedef boost::numeric::interval<Float, boost::numeric::interval_lib::
 #define PI_H (pi_half<IFloat>())
 #define INF  (std::numeric_limits<Float>::infinity())
 
-namespace ifloat         = boost::numeric::interval_lib;
+namespace ifloat = boost::numeric::interval_lib;
+namespace ilogic = boost::logic;
 
 // NOTE: This work well, but for optimizzation reasons it isn't exactly
 // conformant to C99, but it can return an equivalent angle
@@ -78,10 +81,10 @@ inline IFloat atan2(const IFloat &x, const IFloat &y)
     using namespace ifloat;
     using namespace ifloat::compare::certain;
     
-    if (x > 0.)
+    if (x > IFloat(0))
         return angle;
     
-    if (x < 0.)
+    if (x < IFloat(0))
         return IFloat(angle) + PI;
 
     return angle + IFloat(0, PI.upper());
@@ -131,6 +134,7 @@ inline const IFloat  ei_cos (const IFloat &x) {return cos(x);}
 typedef Eigen::Matrix<IFloat, 2, 1>        IVector2;
 typedef Eigen::Matrix<IFloat, 3, 1>        IVector3;
 typedef Eigen::Matrix<IFloat, 4, 1>        IVector4;
+typedef Eigen::Matrix<IFloat, 3, 3>        IMatrix3;
 typedef Eigen::Matrix<IFloat, 4, 4>        IMatrix4;
 typedef Eigen::ParametrizedLine<IFloat, 3> ILine;
 typedef Eigen::Quaternion<IFloat>          IAngle;

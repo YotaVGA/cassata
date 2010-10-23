@@ -114,7 +114,7 @@ const IFloat Scene::hit(const Ray &ray, IFloat *distance,
         using namespace compare::certain;
 
         IFloat h = geometries[i]->hit(ray, distance, ds);
-        if (h == 0)
+        if (h == IFloat(0))
             continue;
 
         *object = i;
@@ -155,7 +155,7 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
 
         if (tempdistance < distance)
         {
-            if (temphit == 1)
+            if (temphit == IFloat(1))
             {
                 distance = tempdistance;
                 val = tempvalue;
@@ -169,7 +169,7 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
         }
         else if (tempdistance > distance)
         {
-            if (hitp == 1)
+            if (hitp == IFloat(1))
                 continue;
 
             distance = hull(distance, tempdistance);

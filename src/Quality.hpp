@@ -30,12 +30,12 @@ class Quality
 
         inline int maxsubdivisionindex() const
         {
-            return 3;
+            return 16;
         }
 
         inline int subdivisions(int subindex) const
         {
-            return subindex;
+            return 2 * subindex;
         }
 
         inline bool stopIteration() const
@@ -55,7 +55,7 @@ class Quality
 
         inline Float tollerance() const
         {
-            return ifloat::div<IFloat>(1, 2 * 256).upper();
+            return ifloat::div<IFloat>(1, 2 * 256).lower();
         }
 };
 

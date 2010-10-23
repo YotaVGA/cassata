@@ -22,22 +22,51 @@
 Triangle::Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc) :
     Geometry(scene), a(pa), b(pb), c(pc), plane(IPlane::Through(pa, pb, pc))
 {
+    matinv.col(0) = a;
+    matinv.col(1) = b;
+    matinv.col(2) = c;
+
+    matinv = matinv.inverse();
 }
 
 const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
         DifferentialSpace *ds) const
 {
+    bool certain = true;
+
     *distance = ILine(ray.line()).intersection(plane);
 
     using namespace ifloat;
-    using namespace compare::certain;
+    using namespace ilogic;
+    using namespace compare::tribool;
 
-    *ds = DifferentialSpace(a);
-
-    if (*distance < 0 || *distance > ray.lenght())
+    tribool ba = *distance < 0,
+            bb = *distance > ray.lenght();
+    if (ba or bb)
         return 0;
+    if (indeterminate(ba) or indeterminate(bb))
+        certain = false;
 
-    return 1;
+    IVector3 p = ray.line().origin() + *distance * ray.line().direction();
+    IVector3 b;
+    IVector3 barycentric = matinv * p;
+
+    for (int i = 0; i < 3; i++)
+    {
+        ba = barycentric[i] < IFloat(0);
+        bb = barycentric[i] > IFloat(1);
+        if (ba || bb)
+            return 0;
+        if (indeterminate(ba) or indeterminate(bb))
+            certain = false;
+    }
+
+    *ds = DifferentialSpace(p);
+
+    if (certain)
+        return 1;
+    else
+        return IFloat(0, 1);
 }
 
 const IFloat Triangle::value(const DifferentialSpace &ds,
