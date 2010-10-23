@@ -90,7 +90,10 @@ gotvalue:
 
     using namespace std;
 
-    int qvalue = max(min((int)round(median(value * IFloat(256))), 255), 0);
+    Float t = median(value * IFloat(256));
+    swapRounding();
+    int qvalue = max(min((int)round(t), 255), 0);
+    swapRounding();
     return QColor(qvalue, qvalue, qvalue);
 }
 

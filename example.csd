@@ -12,5 +12,10 @@
             <point>-1  1 -1.5</point>
             <point> 1  1 -1.5</point>
         </polygon>
+        <polygon>
+            <point>-1 -1 -1.5</point>
+            <point> 1 -1 -1.5</point>
+            <point> 1  1 -1.5</point>
+        </polygon>
     </mesh>
 </scene>

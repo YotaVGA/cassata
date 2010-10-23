@@ -35,13 +35,26 @@
 
 typedef double Float;
 
+void initFloats();
+void swapRounding();
+
 class RoundingIFloat :
     public boost::numeric::interval_lib::rounded_arith_exact<Float>
 {
 public:
-#define ROUNDINGIFLOATFUNC(f)                           \
-    inline Float f##_down(Float x) {return f##_rd(x);}  \
-    inline Float f##_up  (Float x) {return f##_ru(x);}  \
+#define ROUNDINGIFLOATFUNC(f)        \
+    inline Float f##_down(Float x) { \
+        swapRounding();              \
+        Float r = f##_rd(x);         \
+        swapRounding();              \
+        return r;                    \
+    }                                \
+    inline Float f##_up(Float x) {   \
+        swapRounding();              \
+        Float r = f##_ru(x);         \
+        swapRounding();              \
+        return r;                    \
+    }
 
     ROUNDINGIFLOATFUNC(exp);
     ROUNDINGIFLOATFUNC(log);
@@ -61,7 +74,11 @@ typedef boost::numeric::interval<Float, boost::numeric::interval_lib::
                                  policies<boost::numeric::interval_lib::
                                  save_state<RoundingIFloat>,
                                  boost::numeric::interval_lib::
-                                          checking_strict<Float> > > IFloat;
+                                        checking_strict<Float> > >
+                                            ProtectedIFloat;
+
+typedef typename boost::numeric::interval_lib::unprotect<ProtectedIFloat>::
+                        type IFloat;
 
 #define PI   (pi<IFloat>())
 #define PI2  (pi_twice<IFloat>())

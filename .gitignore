@@ -2,5 +2,5 @@
 .scons*
 build/
 options.py
-out.png
+*.png
 *.pyc

@@ -24,7 +24,8 @@ import os
 
 src = ["main.cpp", "Scene.cpp", "Window.cpp", "SceneElement.cpp",
        "SceneImage.cpp", "SceneMesh.cpp", "SceneCamera.cpp",
-       "ScenePinhole.cpp", "Geometry.cpp", "Triangle.cpp", "Render.cpp"]
+       "ScenePinhole.cpp", "Geometry.cpp", "Triangle.cpp", "Render.cpp",
+       "Float.cpp"]
 
 opts = Variables('options.py')
 opts.Add(BoolVariable('DEBUG', 'If true the targets are build in debug mode', \
@@ -60,9 +61,12 @@ Options:
 
 env.EnableQt4Modules(['QtCore', 'QtGui', 'QtXml'])
 
+env['CXXFLAGS'] = Split(env['CXXFLAGS'])
+
 if env['DEBUG']:
-    env['CXXFLAGS'] = Split(env['CXXFLAGS'])
     env.Append(CXXFLAGS = '-g')
+
+#env.Append(CXXFLAGS = '-ffloat-store') #GCC only
 
 d = lambda s: os.path.join(env['BUILDDIR'], s)
 

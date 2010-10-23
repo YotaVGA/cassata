@@ -18,3 +18,20 @@
 // 02110-1301  USA
 
 #include "Float.hpp"
+
+QSharedPointer<ProtectedIFloat::traits_type::rounding> roundPolicy;
+static int roundness;
+
+void initFloats()
+{
+    roundness = fegetround();
+    roundPolicy = (typeof roundPolicy)(
+            new ProtectedIFloat::traits_type::rounding());
+}
+
+void swapRounding()
+{
+    int r = roundness;
+    roundness = fegetround();
+    fesetround(r);
+}

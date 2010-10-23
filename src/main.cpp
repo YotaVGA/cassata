@@ -32,17 +32,18 @@ using namespace std;
 
 void render(Render *render, Window *win, Scene *scene)
 {
+    initFloats();
     render->render(win, *scene);
 }
 
 int main(int argc, char **argv)
 {
+    QLocale::setDefault(QLocale::C);
+
     //Scene registrations
     SceneRegister<SceneImage>   regsceneimage ("image");
     SceneRegister<SceneMesh>    regscenemesh  ("mesh");
     SceneRegister<ScenePinhole> regscenecamera("pinhole");
-
-    QLocale::setDefault(QLocale::C);
 
     try
     {
@@ -57,7 +58,9 @@ int main(int argc, char **argv)
         QElapsedTimer timer;
         timer.start();
 
+        initFloats();
         Scene scene(args.at(1));
+        swapRounding();
 
         cout << "Parsing time: " <<
             r.showTime(timer.elapsed()).toStdString() << endl;

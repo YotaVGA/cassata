@@ -53,9 +53,9 @@ const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
 
     for (int i = 0; i < 3; i++)
     {
-        ba = barycentric[i] < IFloat(0);
-        bb = barycentric[i] > IFloat(1);
-        if (ba || bb)
+        ba = barycentric[i] <= IFloat(0);
+        bb = barycentric[i] >= IFloat(1);
+        if (ba or bb)
             return 0;
         if (indeterminate(ba) or indeterminate(bb))
             certain = false;

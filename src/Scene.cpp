@@ -79,7 +79,7 @@ Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
 
     for (int i = 0; i < element("geometry")["list"].size(); i++)
         geometries << qSharedPointerDynamicCast<Geometry>(
-                element("geometry")["list"][0]);
+                element("geometry")["list"][i]);
 }
 
 SceneList &Scene::element(const QString &name)
@@ -148,8 +148,6 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
     for (temphit = hit(ray, &tempdistance, &ds, &i, skip, i);
          i < geometries.size(); i++)
     {
-        IFloat tempvalue = value(ds, quality, i);
-
         using namespace boost::numeric::interval_lib;
         using namespace compare::certain;
 
@@ -158,13 +156,14 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
             if (temphit == IFloat(1))
             {
                 distance = tempdistance;
-                val = tempvalue;
+                val = value(ds, quality, i);
             }
             else
             {
                 distance = hull(distance, tempdistance);
-                val = tempvalue * temphit + hull(max(hitp - temphit, IFloat(0)),
-                        min(hitp, IFloat(1) - temphit)) * val;
+                val = value(ds, quality, i) * temphit +
+                      hull(max(hitp - temphit, IFloat(0)), 
+                           min(hitp, IFloat(1) - temphit)) * val;
             }
         }
         else if (tempdistance > distance)
@@ -174,13 +173,15 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
 
             distance = hull(distance, tempdistance);
             val = val * hitp + hull(max(temphit - hitp, IFloat(0)),
-                    min(temphit, IFloat(1) - hitp)) * tempvalue;
+                  min(temphit, IFloat(1) - hitp)) * value(ds, quality, i);
         }
         else
         {
             distance = hull(distance, tempdistance);
-            val = hull(temphit, max(hitp - temphit, IFloat(0))) * tempvalue +
-                  hull(hitp,    max(temphit - hitp, IFloat(0))) * val;
+            val = hull(temphit, max(hitp - temphit, IFloat(0))) *
+                    value(ds, quality, i) +
+                  hull(hitp,    max(temphit - hitp, IFloat(0))) *
+                    val;
         }
 
         hitp = max(hitp, temphit);
