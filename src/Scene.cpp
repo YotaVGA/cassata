@@ -145,7 +145,7 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
     IFloat tempdistance;
     qint64 i = 0;
     DifferentialSpace ds;
-    for (temphit = hit(ray, &tempdistance, &ds, &i, skip, i);
+    for (; temphit = hit(ray, &tempdistance, &ds, &i, skip, i),
          i < geometries.size(); i++)
     {
         using namespace boost::numeric::interval_lib;
