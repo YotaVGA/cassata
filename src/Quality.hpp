@@ -30,12 +30,18 @@ class Quality
 
         inline int maxsubdivisionindex() const
         {
-            return 8;
+            return 16;
         }
 
         inline int subdivisions(int subindex) const
         {
             return 2 * subindex;
+        }
+
+        inline Float steptollerance(int totalsteps, int steps) const
+        {
+            return ifloat::div<IFloat>(1,
+                    (1 << (totalsteps - steps)) * 2 * 256).lower();
         }
 
         inline bool stopIteration() const
