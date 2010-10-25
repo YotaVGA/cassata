@@ -69,8 +69,14 @@ const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
         return IFloat(0, 1);
 }
 
-const IFloat Triangle::value(const DifferentialSpace &ds,
-        const Quality &quality) const
+const IFloat Triangle::directvalue(const DifferentialSpace &ds,
+                                   const Quality &quality) const
 {
     return 1;
+}
+
+const IFloat Triangle::indirectvalue(const DifferentialSpace &ds,
+                                     const Quality &quality) const
+{
+    return 0;
 }

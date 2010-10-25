@@ -23,6 +23,12 @@ Geometry::Geometry(Scene &scene) : refscene(scene)
 {
 }
 
+const IFloat Geometry::value(const DifferentialSpace &ds,
+                             const Quality &quality) const
+{
+    return directvalue(ds, quality) + indirectvalue(ds, quality);
+}
+
 Geometry::~Geometry()
 {
 }

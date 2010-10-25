@@ -33,9 +33,11 @@ class Triangle : public Geometry
         Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc);
 
         virtual const IFloat hit(const Ray &ray, IFloat *distance,
-                DifferentialSpace *ds) const;
-        virtual const IFloat value(const DifferentialSpace &ds,
-                const Quality &quality) const;
+                                 DifferentialSpace *ds) const;
+        virtual const IFloat directvalue(const DifferentialSpace &ds,
+                                         const Quality &quality) const;
+        virtual const IFloat indirectvalue(const DifferentialSpace &ds,
+                                           const Quality &quality) const;
 };
 
 #endif
