@@ -23,6 +23,12 @@ Geometry::Geometry(Scene &scene) : refscene(scene)
 {
 }
 
+const IFloat Geometry::directvalue(const DifferentialSpace &ds,
+                                   const Quality &quality) const
+{
+    return emission(ds, quality) + directreflection(ds, quality);
+}
+
 const IFloat Geometry::value(const DifferentialSpace &ds,
                              const Quality &quality) const
 {
