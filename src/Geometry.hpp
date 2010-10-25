@@ -22,8 +22,9 @@
 
 #include "Ray.hpp"
 #include "DifferentialSpace.hpp"
-#include "Scene.hpp"
 #include "Quality.hpp"
+
+class Scene;
 
 class Geometry : public QObject
 {
@@ -46,5 +47,7 @@ class Geometry : public QObject
 
         virtual ~Geometry();
 };
+
+#include "Scene.hpp"
 
 #endif

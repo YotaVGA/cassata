@@ -125,145 +125,19 @@ const IFloat Scene::hit(const Ray &ray, IFloat *distance,
     return 0;
 }
 
-const IFloat Scene::indirectvalue(const DifferentialSpace &ds,
-                                  const Quality &quality, qint64 object)
-{
-    return geometries[object]->indirectvalue(ds, quality);
-}
-
-const IFloat Scene::indirectsample(const Ray &ray, const Quality &quality,
-                                   qint64 skip)
-{
-    if (quality.stopIteration())
-        return limits(ray);
-
-    IFloat hitp = 0;
-    IFloat distance = INFINITY;
-    IFloat val = 0;
-
-    IFloat temphit;
-    IFloat tempdistance;
-    qint64 i = 0;
-    DifferentialSpace ds;
-    for (; temphit = hit(ray, &tempdistance, &ds, &i, skip, i),
-         i < geometries.size(); i++)
-    {
-        using namespace boost::numeric::interval_lib;
-        using namespace compare::certain;
-
-        if (tempdistance < distance)
-        {
-            if (temphit == IFloat(1))
-            {
-                distance = tempdistance;
-                val = indirectvalue(ds, quality, i);
-            }
-            else
-            {
-                distance = hull(distance, tempdistance);
-                val = indirectvalue(ds, quality, i) * temphit +
-                      hull(max(hitp - temphit, IFloat(0)), 
-                           min(hitp, IFloat(1) - temphit)) * val;
-            }
-        }
-        else if (tempdistance > distance)
-        {
-            if (hitp == IFloat(1))
-                continue;
-
-            distance = hull(distance, tempdistance);
-            val = val * hitp + hull(max(temphit - hitp, IFloat(0)),
-                      min(temphit, IFloat(1) - hitp)) *
-                  indirectvalue(ds, quality, i);
-        }
-        else
-        {
-            distance = hull(distance, tempdistance);
-            val = hull(temphit, max(hitp - temphit, IFloat(0))) *
-                    indirectvalue(ds, quality, i) +
-                  hull(hitp,    max(temphit - hitp, IFloat(0))) *
-                    val;
-        }
-
-        hitp = max(hitp, temphit);
-    }
-
-    return hitp * val;
-}
-const IFloat Scene::directvalue(const DifferentialSpace &ds,
-                                const Quality &quality, qint64 object)
-{
-    return geometries[object]->directvalue(ds, quality);
-}
-
-const IFloat Scene::directsample(const Ray &ray, const Quality &quality,
-                                 qint64 skip)
-{
-    if (quality.stopIteration())
-        return limits(ray);
-
-    IFloat hitp = 0;
-    IFloat distance = INFINITY;
-    IFloat val = 0;
-
-    IFloat temphit;
-    IFloat tempdistance;
-    qint64 i = 0;
-    DifferentialSpace ds;
-    for (; temphit = hit(ray, &tempdistance, &ds, &i, skip, i),
-         i < geometries.size(); i++)
-    {
-        using namespace boost::numeric::interval_lib;
-        using namespace compare::certain;
-
-        if (tempdistance < distance)
-        {
-            if (temphit == IFloat(1))
-            {
-                distance = tempdistance;
-                val = directvalue(ds, quality, i);
-            }
-            else
-            {
-                distance = hull(distance, tempdistance);
-                val = directvalue(ds, quality, i) * temphit +
-                      hull(max(hitp - temphit, IFloat(0)), 
-                           min(hitp, IFloat(1) - temphit)) * val;
-            }
-        }
-        else if (tempdistance > distance)
-        {
-            if (hitp == IFloat(1))
-                continue;
-
-            distance = hull(distance, tempdistance);
-            val = val * hitp + hull(max(temphit - hitp, IFloat(0)),
-                      min(temphit, IFloat(1) - hitp)) *
-                  directvalue(ds, quality, i);
-        }
-        else
-        {
-            distance = hull(distance, tempdistance);
-            val = hull(temphit, max(hitp - temphit, IFloat(0))) *
-                    directvalue(ds, quality, i) +
-                  hull(hitp,    max(temphit - hitp, IFloat(0))) *
-                    val;
-        }
-
-        hitp = max(hitp, temphit);
-    }
-
-    return hitp * val;
-}
-
 const IFloat Scene::value(const DifferentialSpace &ds, const Quality &quality,
-                          qint64 object)
+                          qint64 object, const IFloat (Geometry::*valfunc)(
+                              const DifferentialSpace &,
+                              const Quality &) const)
 {
-    return geometries[object]->value(ds, quality);
+    return (geometries[object].data()->*valfunc)(ds, quality);
 }
 
 const IFloat Scene::sample(const Ray &ray, const Quality &quality,
-                           qint64 skip)
+                           qint64 skip,
+                           const IFloat (Geometry::*valfunc)(
+                               const DifferentialSpace&,
+                               const Quality &) const)
 {
     if (quality.stopIteration())
         return limits(ray);
@@ -287,12 +161,12 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
             if (temphit == IFloat(1))
             {
                 distance = tempdistance;
-                val = value(ds, quality, i);
+                val = value(ds, quality, i, valfunc);
             }
             else
             {
                 distance = hull(distance, tempdistance);
-                val = value(ds, quality, i) * temphit +
+                val = value(ds, quality, i, valfunc) * temphit +
                       hull(max(hitp - temphit, IFloat(0)), 
                            min(hitp, IFloat(1) - temphit)) * val;
             }
@@ -304,13 +178,14 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
 
             distance = hull(distance, tempdistance);
             val = val * hitp + hull(max(temphit - hitp, IFloat(0)),
-                  min(temphit, IFloat(1) - hitp)) * value(ds, quality, i);
+                      min(temphit, IFloat(1) - hitp)) *
+                  value(ds, quality, i, valfunc);
         }
         else
         {
             distance = hull(distance, tempdistance);
             val = hull(temphit, max(hitp - temphit, IFloat(0))) *
-                    value(ds, quality, i) +
+                    value(ds, quality, i, valfunc) +
                   hull(hitp,    max(temphit - hitp, IFloat(0))) *
                     val;
         }

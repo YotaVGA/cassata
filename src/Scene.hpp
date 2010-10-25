@@ -24,10 +24,9 @@
 #include <QtGui>
 #include "SceneElement.hpp"
 #include "Ray.hpp"
+#include "Geometry.hpp"
 #include "DifferentialSpace.hpp"
 #include "Quality.hpp"
-
-class Geometry;
 
 class SceneCamera;
 
@@ -54,18 +53,16 @@ class Scene
         const IFloat hit(const Ray &ray, IFloat *distance,
                          DifferentialSpace *ds, qint64 *object,
                          qint64 skip = -1, qint64 start = 0);
-        const IFloat directvalue(const DifferentialSpace &ds,
-                                 const Quality &quality, qint64 object);
-        const IFloat directsample(const Ray &ray, const Quality &quality,
-                                  qint64 skip = -1);
-        const IFloat indirectvalue(const DifferentialSpace &ds,
-                                   const Quality &quality, qint64 object);
-        const IFloat indirectsample(const Ray &ray, const Quality &quality,
-                                    qint64 skip = -1);
         const IFloat value(const DifferentialSpace &ds,
-                           const Quality &quality, qint64 object);
+                           const Quality &quality, qint64 object,
+                           const IFloat (Geometry::*valfunc)(
+                               const DifferentialSpace &,
+                               const Quality &) const = &Geometry::value);
         const IFloat sample(const Ray &ray, const Quality &quality,
-                            qint64 skip = -1);
+                            qint64 skip = -1,
+                            const IFloat (Geometry::*valfunc)(
+                                const DifferentialSpace &,
+                                const Quality &) const = &Geometry::value);
 
         int width() const;
         int height() const;
@@ -152,6 +149,5 @@ template <typename T> class SceneRegister : public BaseSceneRegister
 };
 
 #include "SceneCamera.hpp"
-#include "Geometry.hpp"
 
 #endif
