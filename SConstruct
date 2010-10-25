@@ -70,7 +70,7 @@ if env['DEBUG']:
 
 d = lambda s: os.path.join(env['BUILDDIR'], s)
 
-env.BuildDir(env['BUILDDIR'], 'src')
+env.VariantDir(env['BUILDDIR'], 'src')
 
 cassata = env.Program(os.path.join(env['BUILDDIR'], 'cassata'), map(d, src))
 
