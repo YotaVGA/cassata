@@ -19,17 +19,14 @@
 
 #include "ScenePinhole.hpp"
 
-ScenePinhole::ScenePinhole(const QDomNode &node, Scene &scene,
-                           QSharedPointer<SceneElement> &object) :
-    SceneCamera(node, scene, object), o(0, 0, 0)
+ScenePinhole::ScenePinhole() : o(0, 0, 0)
 {
-    sceneptr = &scene;
 }
 
 void ScenePinhole::initialize()
 {
-    int w = sceneptr->width(),
-        h = sceneptr->height();
+    int w = refscene->width(),
+        h = refscene->height();
 
     using namespace ifloat;
 
@@ -46,7 +43,7 @@ void ScenePinhole::initialize()
         Tx = IFloat(1);
     }
 
-    q = sceneptr->defaultQuality();
+    q = refscene->defaultQuality();
 }
 
 const QColor ScenePinhole::pixel(int x, int y)
@@ -75,7 +72,7 @@ const QColor ScenePinhole::pixel(int x, int y)
 
             value = tempval;
 
-            single = sceneptr->singleValuePixel(value);
+            single = refscene->singleValuePixel(value);
             if (single)
                 goto gotvalue;
 
@@ -87,7 +84,7 @@ const QColor ScenePinhole::pixel(int x, int y)
     }
 gotvalue:
 
-    sceneptr->newPixelStatistics(value, quality.tollerance(), w, single);
+    refscene->newPixelStatistics(value, quality.tollerance(), w, single);
 
     using namespace std;
 
@@ -103,7 +100,7 @@ const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int totalsteps,
 {
     IVector3 d(Tx - S * x, Ty - S * y, -1);
     d.normalize();
-    IFloat s = sceneptr->sample(Ray(ILine(o, d)), quality);
+    IFloat s = refscene->sample(Ray(ILine(o, d)), quality);
 
     if (!steps || width(s) < quality.steptollerance(totalsteps, steps))
     {

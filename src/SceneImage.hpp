@@ -25,8 +25,8 @@
 class SceneImage : public SceneElement
 {
     public:
-        SceneImage(const QDomNode &node, Scene &scene,
-                QSharedPointer<SceneElement> &object);
+        virtual void construct(const QDomNode &node, Scene &scene,
+                               QSharedPointer<SceneElement> &object);
 };
 
 #endif

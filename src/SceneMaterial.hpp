@@ -24,8 +24,6 @@
 
 class SceneMaterial : public SceneElement
 {
-    public:
-        SceneMaterial(QSharedPointer<SceneElement> &object);
 };
 
 #endif

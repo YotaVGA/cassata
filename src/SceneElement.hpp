@@ -21,12 +21,14 @@
 #define SCENEELEMENT_HPP
 
 #include <QtCore>
+#include <QtXml>
+#include "Scene.hpp"
 
 class SceneElement : public QObject
 {
     public:
-        SceneElement(QSharedPointer<SceneElement> &object);
-
+        virtual void construct(const QDomNode &node, Scene &scene,
+                               QSharedPointer<SceneElement> &object);
         virtual void initialize();
 
         virtual ~SceneElement();

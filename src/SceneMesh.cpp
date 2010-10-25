@@ -19,9 +19,11 @@
 
 #include "SceneMesh.hpp"
 
-SceneMesh::SceneMesh(const QDomNode &node, Scene &scene,
-        QSharedPointer<SceneElement> &object) : SceneElement(object)
+void SceneMesh::construct(const QDomNode &node, Scene &scene,
+                          QSharedPointer<SceneElement> &object)
 {
+    SceneElement::construct(node, scene, object);
+
     start = stop = scene.element("geometry")["list"].length();
 
     for (QDomNode i = node.firstChild(); !i.isNull(); i = i.nextSibling())

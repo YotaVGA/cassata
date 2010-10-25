@@ -31,8 +31,8 @@ class SceneMesh : public SceneElement
         int materialline, materialcolumn;
 
     public:
-        SceneMesh(const QDomNode &node, Scene &scene,
-                QSharedPointer<SceneElement> &object);
+        virtual void construct(const QDomNode &node, Scene &scene,
+                               QSharedPointer<SceneElement> &object);
 };
 
 #endif

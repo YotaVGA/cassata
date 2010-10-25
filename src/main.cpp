@@ -27,6 +27,7 @@
 #include "SceneMesh.hpp"
 #include "ScenePinhole.hpp"
 #include "SceneDiffuse.hpp"
+#include "SceneRegistrations.hpp"
 #include "Render.hpp"
 
 using namespace std;

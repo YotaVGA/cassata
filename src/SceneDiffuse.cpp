@@ -18,9 +18,3 @@
 // 02110-1301  USA
 
 #include "SceneDiffuse.hpp"
-
-SceneDiffuse::SceneDiffuse(const QDomNode &node, Scene &scene,
-                           QSharedPointer<SceneElement> &object) :
-                               SceneMaterial(object)
-{
-}

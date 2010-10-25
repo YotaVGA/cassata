@@ -17,12 +17,6 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneCamera.hpp"
+#include "SceneRegistrations.hpp"
 
-void SceneCamera::construct(const QDomNode &node, Scene &scene,
-                            QSharedPointer<SceneElement> &object)
-{
-    SceneElement::construct(node, scene, object);
-    refscene = &scene;
-    scene.element("camera")["shader"] << object;
-}
+QHash<QString, BaseSceneRegister *> sceneregistrations;

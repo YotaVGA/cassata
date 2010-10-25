@@ -17,12 +17,36 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneCamera.hpp"
+#ifndef SCENEREGISTRATIONS_HPP
+#define SCENEREGISTRATIONS_HPP
 
-void SceneCamera::construct(const QDomNode &node, Scene &scene,
-                            QSharedPointer<SceneElement> &object)
+#include "Scene.hpp"
+#include "SceneElement.hpp"
+
+class BaseSceneRegister
 {
-    SceneElement::construct(node, scene, object);
-    refscene = &scene;
-    scene.element("camera")["shader"] << object;
-}
+    public:
+        virtual QSharedPointer<SceneElement> newClass() const = 0;
+
+        virtual ~BaseSceneRegister();
+};
+
+template <typename T> class SceneRegister : public BaseSceneRegister
+{
+    public:
+        SceneRegister(const QString &name)
+        {
+            extern QHash<QString, BaseSceneRegister *> sceneregistrations;
+
+            sceneregistrations[name] = this;
+        }
+
+        virtual QSharedPointer<SceneElement> newClass() const
+        {
+            return QSharedPointer<SceneElement>(new T);
+        }
+};
+
+extern QHash<QString, BaseSceneRegister *> sceneregistrations;
+
+#endif

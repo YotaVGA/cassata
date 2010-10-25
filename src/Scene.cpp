@@ -18,9 +18,9 @@
 // 02110-1301  USA
 
 #include "Scene.hpp"
+#include "SceneRegistrations.hpp"
 #include "Geometry.hpp"
-
-QHash<QString, BaseSceneRegister *> sceneregistrations;
+#include "SceneCamera.hpp"
 
 BaseSceneRegister::~BaseSceneRegister()
 {
@@ -55,8 +55,9 @@ Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
                 arg(i.lineNumber()).arg(i.columnNumber()).
                 arg(elem.tagName());
 
-        QSharedPointer<SceneElement> shader;
-        shaderiterator.value()->newClass(i, *this, shader);
+        QSharedPointer<SceneElement> shader =
+            shaderiterator.value()->newClass();
+        shader->construct(i, *this, shader);
         shaders << shader;
         QString name = elem.attribute("id");
         if (!name.isEmpty())

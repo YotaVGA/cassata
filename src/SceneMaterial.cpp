@@ -18,8 +18,3 @@
 // 02110-1301  USA
 
 #include "SceneMaterial.hpp"
-
-SceneMaterial::SceneMaterial(QSharedPointer<SceneElement> &object) :
-    SceneElement(object)
-{
-}

@@ -24,9 +24,6 @@
 
 class SceneDiffuse : public SceneMaterial
 {
-    public:
-        SceneDiffuse(const QDomNode &node, Scene &scene,
-                     QSharedPointer<SceneElement> &object);
 };
 
 #endif

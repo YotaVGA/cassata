@@ -22,7 +22,6 @@
 
 #include <QtXml>
 #include <QtGui>
-#include "SceneElement.hpp"
 #include "Ray.hpp"
 #include "Geometry.hpp"
 #include "DifferentialSpace.hpp"
@@ -119,35 +118,5 @@ class Scene
                 incert++;
         }
 };
-
-class BaseSceneRegister
-{
-    public:
-        virtual SceneElement *
-            newClass(const QDomNode &node, Scene &scene,
-                     QSharedPointer<SceneElement> &object) const = 0;
-
-        virtual ~BaseSceneRegister();
-};
-
-template <typename T> class SceneRegister : public BaseSceneRegister
-{
-    public:
-        SceneRegister(const QString &name)
-        {
-            extern QHash<QString, BaseSceneRegister *> sceneregistrations;
-
-            sceneregistrations[name] = this;
-        }
-
-        virtual SceneElement *
-            newClass(const QDomNode &node, Scene &scene,
-                     QSharedPointer<SceneElement> &object) const
-        {
-            return new T(node, scene, object);
-        }
-};
-
-#include "SceneCamera.hpp"
 
 #endif

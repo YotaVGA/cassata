@@ -19,9 +19,11 @@
 
 #include "SceneImage.hpp"
 
-SceneImage::SceneImage(const QDomNode &node, Scene &scene,
-        QSharedPointer<SceneElement> &object) : SceneElement(object)
+void SceneImage::construct(const QDomNode &node, Scene &scene,
+                           QSharedPointer<SceneElement> &object)
 {
+    SceneElement::construct(node, scene, object);
+    
     for (QDomNode i = node.firstChild(); !i.isNull(); i = i.nextSibling())
     {
         if (!i.isElement())

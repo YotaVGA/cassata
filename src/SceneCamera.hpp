@@ -25,12 +25,11 @@
 class SceneCamera : public SceneElement
 {
     protected:
-        Scene &refscene;
+        Scene *refscene;
 
     public:
-        SceneCamera(const QDomNode &node, Scene &scene,
-                QSharedPointer<SceneElement> &object);
-
+        virtual void construct(const QDomNode &node, Scene &scene,
+                               QSharedPointer<SceneElement> &object);
         virtual const QColor pixel(int x, int y) = 0;
 };
 
