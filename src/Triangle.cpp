@@ -40,8 +40,8 @@ const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
     using namespace ilogic;
     using namespace compare::tribool;
 
-    tribool ba = *distance < 0,
-            bb = *distance > ray.lenght();
+    tribool ba = *distance < IFloat(0),
+            bb = *distance > IFloat(ray.lenght());
     if (ba or bb)
         return 0;
     if (indeterminate(ba) or indeterminate(bb))
