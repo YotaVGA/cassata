@@ -22,6 +22,8 @@
 SceneMesh::SceneMesh(const QDomNode &node, Scene &scene,
         QSharedPointer<SceneElement> &object) : SceneElement(object)
 {
+    start = stop = scene.element("geometry")["list"].length();
+
     for (QDomNode i = node.firstChild(); !i.isNull(); i = i.nextSibling())
     {
         if (!i.isElement())
@@ -74,6 +76,27 @@ SceneMesh::SceneMesh(const QDomNode &node, Scene &scene,
             scene.element("geometry")["list"] <<
                 QSharedPointer<QObject>(new Triangle(scene, points[0],
                                                      points[1], points[2]));
+            stop++;
+        }
+        else if (name == "material")
+        {
+            if (!materialid.isEmpty())
+                throw QString(
+                        "Error in %1.%2: only a material can be expressed").
+                    arg(i.lineNumber()).arg(i.columnNumber());
+
+            materialid = elem.attribute("id");
+            if (materialid.isEmpty())
+                throw QString("Error in %1.%2: material id must be expressed").
+                    arg(i.lineNumber()).arg(i.columnNumber());
+
+            materialline   = i.lineNumber();
+            materialcolumn = i.columnNumber();
         }
     }
+
+    if (materialid.isEmpty())
+        throw QString(
+                "Error in %1.%2: a material must be expressed").
+            arg(node.lineNumber()).arg(node.columnNumber());
 }

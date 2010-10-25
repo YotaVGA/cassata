@@ -6,7 +6,9 @@
         <height>600</height>
     </image>
     <pinhole/>
+    <diffuse id="meshmaterial" />
     <mesh>
+        <material id="meshmaterial"/>
         <polygon>
             <point>-1 -1 -1.5</point>
             <point>-1  1 -1.5</point>

@@ -25,6 +25,11 @@
 
 class SceneMesh : public SceneElement
 {
+    protected:
+        int start, stop;
+        QString materialid;
+        int materialline, materialcolumn;
+
     public:
         SceneMesh(const QDomNode &node, Scene &scene,
                 QSharedPointer<SceneElement> &object);
