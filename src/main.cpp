@@ -26,6 +26,7 @@
 #include "SceneImage.hpp"
 #include "SceneMesh.hpp"
 #include "ScenePinhole.hpp"
+#include "SceneDiffuse.hpp"
 #include "Render.hpp"
 
 using namespace std;
@@ -41,9 +42,10 @@ int main(int argc, char **argv)
     QLocale::setDefault(QLocale::C);
 
     //Scene registrations
-    SceneRegister<SceneImage>   regsceneimage ("image");
-    SceneRegister<SceneMesh>    regscenemesh  ("mesh");
-    SceneRegister<ScenePinhole> regscenecamera("pinhole");
+    SceneRegister<SceneImage>   regsceneimage  ("image");
+    SceneRegister<SceneMesh>    regscenemesh   ("mesh");
+    SceneRegister<ScenePinhole> regscenecamera ("pinhole");
+    SceneRegister<SceneDiffuse> regscenediffuse("diffuse");
 
     try
     {
