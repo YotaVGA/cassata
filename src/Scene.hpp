@@ -54,6 +54,14 @@ class Scene
         const IFloat hit(const Ray &ray, IFloat *distance,
                          DifferentialSpace *ds, qint64 *object,
                          qint64 skip = -1, qint64 start = 0);
+        const IFloat directvalue(const DifferentialSpace &ds,
+                                 const Quality &quality, qint64 object);
+        const IFloat directsample(const Ray &ray, const Quality &quality,
+                                  qint64 skip = -1);
+        const IFloat indirectvalue(const DifferentialSpace &ds,
+                                   const Quality &quality, qint64 object);
+        const IFloat indirectsample(const Ray &ray, const Quality &quality,
+                                    qint64 skip = -1);
         const IFloat value(const DifferentialSpace &ds,
                            const Quality &quality, qint64 object);
         const IFloat sample(const Ray &ray, const Quality &quality,
