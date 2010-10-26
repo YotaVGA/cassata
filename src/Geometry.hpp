@@ -25,6 +25,7 @@
 #include "Quality.hpp"
 
 class Scene;
+class SceneMaterial;
 
 class Geometry : public QObject
 {
@@ -32,26 +33,22 @@ class Geometry : public QObject
 
     protected:
         Scene &refscene;
+        QSharedPointer<SceneMaterial> material;
 
     public:
         Geometry(Scene &scene);
 
+        void setMaterial(QSharedPointer<SceneMaterial> &mat);
+
+        const IFloat value(const DifferentialSpace &ds,
+                           const Quality &quality) const;
+
         virtual const IFloat hit(const Ray &ray, IFloat *distance,
                                  DifferentialSpace *ds) const = 0;
-        virtual const IFloat emission(const DifferentialSpace &ds,
-                                      const Quality &quality) const = 0;
-        virtual const IFloat directreflection(const DifferentialSpace &ds,
-                                              const Quality &quality) const = 0;
-        virtual const IFloat directvalue(const DifferentialSpace &ds,
-                                         const Quality &quality) const;
-        virtual const IFloat indirectvalue(const DifferentialSpace &ds,
-                                           const Quality &quality) const = 0;
-        virtual const IFloat value(const DifferentialSpace &ds,
-                                   const Quality &quality) const;
-
         virtual ~Geometry();
 };
 
+#include "SceneMaterial.hpp"
 #include "Scene.hpp"
 
 #endif

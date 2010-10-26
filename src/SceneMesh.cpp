@@ -23,6 +23,7 @@ void SceneMesh::construct(const QDomNode &node, Scene &scene,
                           QSharedPointer<SceneElement> &object)
 {
     SceneElement::construct(node, scene, object);
+    sceneptr = &scene;
 
     start = stop = scene.element("geometry")["list"].length();
 
@@ -101,4 +102,26 @@ void SceneMesh::construct(const QDomNode &node, Scene &scene,
         throw QString(
                 "Error in %1.%2: a material must be expressed").
             arg(node.lineNumber()).arg(node.columnNumber());
+}
+
+void SceneMesh::initialize()
+{
+    QSharedPointer<QObject> matptr =
+        sceneptr->element("material")[materialid].value(0);
+    if (!matptr)
+        throw QString(
+                "Error in %1.%2: material %3 does not exists").
+            arg(materialline).arg(materialcolumn).arg(materialid);
+
+    QSharedPointer<SceneMaterial> material =
+        qSharedPointerCast<SceneMaterial>(matptr);
+    if (!matptr)
+        throw QString(
+                "Error in %1.%2: id %3 is not a material").
+            arg(materialline).arg(materialcolumn).arg(materialid);
+
+    for (int i = start; i < stop; i++)
+        qSharedPointerCast<Geometry>(
+                sceneptr->element("geometry")["list"][i])->
+            setMaterial(material);
 }

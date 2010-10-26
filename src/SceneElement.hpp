@@ -22,7 +22,8 @@
 
 #include <QtCore>
 #include <QtXml>
-#include "Scene.hpp"
+
+class Scene;
 
 class SceneElement : public QObject
 {

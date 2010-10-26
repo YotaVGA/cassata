@@ -53,15 +53,9 @@ class Scene
                          DifferentialSpace *ds, qint64 *object,
                          qint64 skip = -1, qint64 start = 0);
         const IFloat value(const DifferentialSpace &ds,
-                           const Quality &quality, qint64 object,
-                           const IFloat (Geometry::*valfunc)(
-                               const DifferentialSpace &,
-                               const Quality &) const = &Geometry::value);
+                           const Quality &quality, qint64 object);
         const IFloat sample(const Ray &ray, const Quality &quality,
-                            qint64 skip = -1,
-                            const IFloat (Geometry::*valfunc)(
-                                const DifferentialSpace &,
-                                const Quality &) const = &Geometry::value);
+                            qint64 skip = -1);
 
         int width() const;
         int height() const;

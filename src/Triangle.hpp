@@ -34,14 +34,6 @@ class Triangle : public Geometry
 
         virtual const IFloat hit(const Ray &ray, IFloat *distance,
                                  DifferentialSpace *ds) const;
-        virtual const IFloat emission(const DifferentialSpace &ds,
-                                      const Quality &quality) const;
-        virtual const IFloat directreflection(const DifferentialSpace &ds,
-                                              const Quality &quality) const;
-        virtual const IFloat indirectvalue(const DifferentialSpace &ds,
-                                           const Quality &quality) const;
-        virtual const IFloat value(const DifferentialSpace &ds,
-                                   const Quality &quality) const;
 };
 
 #endif

@@ -23,16 +23,15 @@ Geometry::Geometry(Scene &scene) : refscene(scene)
 {
 }
 
-const IFloat Geometry::directvalue(const DifferentialSpace &ds,
-                                   const Quality &quality) const
+void Geometry::setMaterial(QSharedPointer<SceneMaterial> &mat)
 {
-    return emission(ds, quality) + directreflection(ds, quality);
+    material = mat;
 }
 
 const IFloat Geometry::value(const DifferentialSpace &ds,
                              const Quality &quality) const
 {
-    return directvalue(ds, quality) + indirectvalue(ds, quality);
+    return material->value(ds, quality);
 }
 
 Geometry::~Geometry()

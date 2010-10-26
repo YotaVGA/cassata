@@ -18,3 +18,15 @@
 // 02110-1301  USA
 
 #include "SceneMaterial.hpp"
+
+void SceneMaterial::construct(const QDomNode &node, Scene &scene,
+                              QSharedPointer<SceneElement> &object)
+{
+    QString id = node.toElement().attribute("id");
+
+    if (id.isEmpty())
+        throw QString("Error in %1.%2: material id must be expressed").
+                    arg(node.lineNumber()).arg(node.columnNumber());
+
+    scene.element("material")[id] << object;
+}

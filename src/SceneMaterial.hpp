@@ -24,6 +24,15 @@
 
 class SceneMaterial : public SceneElement
 {
+    public:
+        virtual void construct(const QDomNode &node, Scene &scene,
+                               QSharedPointer<SceneElement> &object);
+
+        const IFloat value(const DifferentialSpace &ds,
+                           const Quality &quality) const
+        {
+            return 1;
+        }
 };
 
 #endif

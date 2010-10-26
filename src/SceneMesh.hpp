@@ -28,11 +28,13 @@ class SceneMesh : public SceneElement
     protected:
         int start, stop;
         QString materialid;
+        Scene *sceneptr;
         int materialline, materialcolumn;
 
     public:
         virtual void construct(const QDomNode &node, Scene &scene,
                                QSharedPointer<SceneElement> &object);
+        virtual void initialize();
 };
 
 #endif
