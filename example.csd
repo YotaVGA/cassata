@@ -6,7 +6,9 @@
         <height>600</height>
     </image>
     <pinhole/>
-    <diffuse id="meshmaterial" />
+    <diffuse id="meshmaterial">
+        <emission>1</emission>
+    </diffuse>
     <mesh>
         <material id="meshmaterial"/>
         <polygon>

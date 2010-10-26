@@ -18,3 +18,37 @@
 // 02110-1301  USA
 
 #include "SceneDiffuse.hpp"
+
+SceneDiffuse::SceneDiffuse() : emission(0), emission_set(false)
+{
+}
+
+void SceneDiffuse::construct(const QDomNode &node, Scene &scene,
+                             QSharedPointer<SceneElement> &object)
+{
+    SceneMaterial::construct(node, scene, object);
+
+    for (QDomNode i = node.firstChild(); !i.isNull(); i = i.nextSibling())
+    {
+        if (!i.isElement())
+            continue;
+
+        QDomElement elem = i.toElement();
+        QString name = elem.tagName();
+
+        if (name == "emission")
+        {
+            if (emission_set)
+                throw QString("Only an emission can be set").
+                    arg(i.lineNumber()).arg(i.columnNumber());
+            emission = elem.text().toDouble();
+            emission_set = true;
+        }
+    }
+}
+
+const IFloat SceneDiffuse::value(const DifferentialSpace &ds,
+                                 const Quality &quality) const
+{
+    return emission;
+}

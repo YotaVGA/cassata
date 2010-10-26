@@ -18,9 +18,3 @@
 // 02110-1301  USA
 
 #include "SceneMaterial.hpp"
-
-const IFloat SceneMaterial::value(const DifferentialSpace &ds,
-                                  const Quality &quality) const
-{
-    return 1;
-}

@@ -106,6 +106,8 @@ void SceneMesh::construct(const QDomNode &node, Scene &scene,
 
 void SceneMesh::initialize()
 {
+    SceneElement::initialize();
+
     QSharedPointer<QObject> matptr =
         sceneptr->element("names")[materialid].value(0);
     if (!matptr)

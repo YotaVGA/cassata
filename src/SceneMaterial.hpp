@@ -26,7 +26,7 @@ class SceneMaterial : public SceneElement
 {
     public:
         virtual const IFloat value(const DifferentialSpace &ds,
-                                   const Quality &quality) const;
+                                   const Quality &quality) const = 0;
 };
 
 #endif
