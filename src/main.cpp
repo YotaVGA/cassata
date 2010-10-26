@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 
         QStringList args = app.arguments();
         if (args.length() != 3)
-            throw QString("Two arguments are required");
+            throw QString("Usage: %1 <scene.csd> <out.png>").arg(args.at(0));
 
         Render r;
 
