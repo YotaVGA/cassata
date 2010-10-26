@@ -107,7 +107,7 @@ void SceneMesh::construct(const QDomNode &node, Scene &scene,
 void SceneMesh::initialize()
 {
     QSharedPointer<QObject> matptr =
-        sceneptr->element("material")[materialid].value(0);
+        sceneptr->element("names")[materialid].value(0);
     if (!matptr)
         throw QString(
                 "Error in %1.%2: material %3 does not exists").

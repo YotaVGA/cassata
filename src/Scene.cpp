@@ -61,7 +61,13 @@ Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
         shaders << shader;
         QString name = elem.attribute("id");
         if (!name.isEmpty())
+        {
+            if (element("names")[name].length())
+                throw QString("Error in %1.%2: There is already an object "
+                        "with id %3").arg(elem.lineNumber()).
+                    arg(elem.columnNumber()).arg(name);
             element("names")[name] << shader;
+        }
     }
 
     for (int i = 0; i < shaders.size(); i++)

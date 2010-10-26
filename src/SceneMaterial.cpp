@@ -19,18 +19,8 @@
 
 #include "SceneMaterial.hpp"
 
-void SceneMaterial::construct(const QDomNode &node, Scene &scene,
-                              QSharedPointer<SceneElement> &object)
+const IFloat SceneMaterial::value(const DifferentialSpace &ds,
+                                  const Quality &quality) const
 {
-    QString id = node.toElement().attribute("id");
-
-    if (id.isEmpty())
-        throw QString("Error in %1.%2: material id must be expressed").
-                    arg(node.lineNumber()).arg(node.columnNumber());
-
-    if (scene.element("material")[id].length())
-        throw QString(
-                "Error in %1.%2: There is already an object with id %3").
-                    arg(node.lineNumber()).arg(node.columnNumber()).arg(id);
-    scene.element("material")[id] << object;
+    return 1;
 }
