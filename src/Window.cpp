@@ -109,7 +109,7 @@ void Window::updateImage()
 
     int ld = lastdraw;
     int w = width();
-    int h = lastdraw - lastline + 1;
+    int h = lastline - lastdraw + 1;
 
     lastdraw = lastline;
 
