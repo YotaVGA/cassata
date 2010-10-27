@@ -26,14 +26,14 @@ class DifferentialSpace
 {
     protected:
         IVector3 p;
+        IVector3 n;
         IVector2 uvc;
-        IAngle   n;
 
     public:
         inline DifferentialSpace(const IVector3 &point = IVector3(),
-                                 const IVector2 &uv = IVector2(),
-                                 const IAngle normal = IAngle()) :
-            p(point), uvc(uv), n(normal)
+                                 const IVector3 normal = IVector3(),
+                                 const IVector2 &uv = IVector2()) :
+            p(point), n(normal), uvc(uv)
         {
         }
 
@@ -42,14 +42,14 @@ class DifferentialSpace
             return p;
         }
 
+        inline const IVector3 &normal() const
+        {
+            return n;
+        }
+
         inline const IVector2 &uv() const
         {
             return uvc;
-        }
-
-        inline const IAngle &normal() const
-        {
-            return n;
         }
 };
 

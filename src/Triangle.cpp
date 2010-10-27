@@ -91,7 +91,16 @@ const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
             certain = false;
     }
 
-    *ds = DifferentialSpace(p);
+    IVector3 normal    = plane.normal();
+    tribool  invnormal = normal.dot(ray.line().direction()) < IFloat(0);
+    if (invnormal)
+        normal = -normal;
+    else if (indeterminate(invnormal))
+        normal = IVector3(hull(normal.x(), -normal.x()),
+                          hull(normal.y(), -normal.y()),
+                          hull(normal.z(), -normal.z()));
+
+    *ds = DifferentialSpace(p, normal);
 
     if (certain)
         return 1;
