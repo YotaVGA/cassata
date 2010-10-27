@@ -48,6 +48,11 @@ class Ray
         {
             len = lenght;
         }
+
+        inline Ray inverse() const
+        {
+            return Ray(ILine(l.origin(), -l.direction()), len);
+        }
 };
 
 #endif

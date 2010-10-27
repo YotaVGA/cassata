@@ -52,10 +52,11 @@ class Scene
         const IFloat hit(const Ray &ray, IFloat *distance,
                          DifferentialSpace *ds, qint64 *object,
                          qint64 skip = -1, qint64 start = 0);
-        const IFloat value(const DifferentialSpace &ds,
-                           const Quality &quality, qint64 object);
+        const IFloat value(const Ray &in, const DifferentialSpace &ds,
+                           const Quality &quality, qint64 object,
+                           int totaldepth, int depth = 0);
         const IFloat sample(const Ray &ray, const Quality &quality,
-                            qint64 skip = -1);
+                            int totaldepth, int depth = 0, qint64 skip = -1);
 
         int width() const;
         int height() const;

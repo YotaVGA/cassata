@@ -18,3 +18,11 @@
 // 02110-1301  USA
 
 #include "SceneMaterial.hpp"
+
+const IFloat SceneMaterial::value(const Ray &in, const DifferentialSpace &ds,
+                                  const Quality &quality, int totaldepth,
+                                  int depth) const
+{
+    return emission(ds, quality, in.inverse()) +
+           reflection(ds, quality, in.inverse(), in) /* STUB */;
+}

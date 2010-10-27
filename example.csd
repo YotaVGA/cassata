@@ -7,10 +7,10 @@
     </image>
     <pinhole/>
     <diffuse id="lightmaterial">
-        <emission>1</emission>
+        <emissivity>1</emissivity>
     </diffuse>
     <diffuse id="meshmaterial">
-        <emission>0.5</emission>
+        <reflectivity>0.8</reflectivity>
     </diffuse>
     <mesh>
         <material id="lightmaterial"/>

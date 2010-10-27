@@ -28,10 +28,11 @@ void Geometry::setMaterial(QSharedPointer<SceneMaterial> &mat)
     material = mat;
 }
 
-const IFloat Geometry::value(const DifferentialSpace &ds,
-                             const Quality &quality) const
+const IFloat Geometry::value(const Ray &in, const DifferentialSpace &ds,
+                             const Quality &quality, int totaldepth,
+                             int depth) const
 {
-    return material->value(ds, quality);
+    return material->value(in, ds, quality, totaldepth, depth);
 }
 
 Geometry::~Geometry()

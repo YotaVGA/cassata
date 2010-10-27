@@ -25,8 +25,8 @@
 class SceneDiffuse : public SceneMaterial
 {
     protected:
-        IFloat emission;
-        bool emission_set;
+        IFloat emissivity,     reflectivity;
+        bool   emissivity_set, reflectivity_set;
 
     public:
         SceneDiffuse();
@@ -34,8 +34,13 @@ class SceneDiffuse : public SceneMaterial
         virtual void construct(const QDomNode &node, Scene &scene,
                                QSharedPointer<SceneElement> &object);
 
-        virtual const IFloat value(const DifferentialSpace &ds,
-                                   const Quality &quality) const;
+        virtual const IFloat emission(const DifferentialSpace &ds,
+                                      const Quality &quality,
+                                      const Ray &out) const;
+        virtual const IFloat reflection(const DifferentialSpace &ds,
+                                        const Quality &quality,
+                                        const Ray &in,
+                                        const Ray &out) const;
 };
 
 #endif

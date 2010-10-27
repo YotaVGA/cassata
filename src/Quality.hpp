@@ -63,6 +63,11 @@ class Quality
         {
             return ifloat::div<IFloat>(1, 2 * 256).lower();
         }
+
+        inline int maxdepth(int totalsteps, int steps) const
+        {
+            return 2;
+        }
 };
 
 #endif

@@ -19,7 +19,8 @@
 
 #include "SceneDiffuse.hpp"
 
-SceneDiffuse::SceneDiffuse() : emission(0), emission_set(false)
+SceneDiffuse::SceneDiffuse() : emissivity(0),         reflectivity(0),
+                               emissivity_set(false), reflectivity_set(false)
 {
 }
 
@@ -36,19 +37,37 @@ void SceneDiffuse::construct(const QDomNode &node, Scene &scene,
         QDomElement elem = i.toElement();
         QString name = elem.tagName();
 
-        if (name == "emission")
+        if (name == "emissivity")
         {
-            if (emission_set)
+            if (emissivity_set)
                 throw QString("Only an emission can be set").
                     arg(i.lineNumber()).arg(i.columnNumber());
-            emission = elem.text().toDouble();
-            emission_set = true;
+            emissivity = elem.text().toDouble();
+            emissivity_set = true;
+        }
+
+        if (name == "reflectivity")
+        {
+            if (reflectivity_set)
+                throw QString("Only a reflectivity can be set").
+                    arg(i.lineNumber()).arg(i.columnNumber());
+            reflectivity = elem.text().toDouble();
+            reflectivity_set = true;
         }
     }
 }
 
-const IFloat SceneDiffuse::value(const DifferentialSpace &ds,
-                                 const Quality &quality) const
+const IFloat SceneDiffuse::emission(const DifferentialSpace &ds,
+                                    const Quality &quality,
+                                    const Ray &out) const
 {
-    return emission;
+    return emissivity;
+}
+
+const IFloat SceneDiffuse::reflection(const DifferentialSpace &ds,
+                                      const Quality &quality,
+                                      const Ray &in,
+                                      const Ray &out) const
+{
+    return reflectivity;
 }

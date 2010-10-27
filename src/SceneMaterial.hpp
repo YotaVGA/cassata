@@ -25,8 +25,17 @@
 class SceneMaterial : public SceneElement
 {
     public:
-        virtual const IFloat value(const DifferentialSpace &ds,
-                                   const Quality &quality) const = 0;
+        virtual const IFloat emission(const DifferentialSpace &ds,
+                                      const Quality &quality,
+                                      const Ray &out) const = 0;
+        virtual const IFloat reflection(const DifferentialSpace &ds,
+                                        const Quality &quality,
+                                        const Ray &in,
+                                        const Ray &out) const = 0;
+
+        virtual const IFloat value(const Ray &in, const DifferentialSpace &ds,
+                                   const Quality &quality, int totaldepth,
+                                   int depth) const;
 };
 
 #endif
