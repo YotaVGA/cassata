@@ -27,7 +27,8 @@ class Triangle : public Geometry
     protected:
         IVector3 a, b, c;
         IPlane   plane;
-        IMatrix3 matinv;
+        IMatrix2 invmatrix;
+        char     i1, i2, i3;
 
     public:
         Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc);

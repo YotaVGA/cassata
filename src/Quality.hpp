@@ -30,7 +30,7 @@ class Quality
 
         inline int maxsubdivisionindex() const
         {
-            return 16;
+            return 256;
         }
 
         inline int subdivisions(int subindex) const

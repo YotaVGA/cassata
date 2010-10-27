@@ -22,11 +22,35 @@
 Triangle::Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc) :
     Geometry(scene), a(pa), b(pb), c(pc), plane(IPlane::Through(pa, pb, pc))
 {
-    matinv.col(0) = a;
-    matinv.col(1) = b;
-    matinv.col(2) = c;
+    using namespace ifloat;
 
-    matinv = matinv.inverse();
+    Float w, wt;
+    w = width(hull(hull(a.x(), b.x()), c.x()));
+    i3 = 0;
+
+    wt = width(hull(hull(a.y(), b.y()), c.y()));
+    if (wt < w)
+    {
+        i3 = 1;
+        w = wt;
+    }
+
+    wt = width(hull(hull(a.z(), b.z()), c.z()));
+    if (wt < w)
+    {
+        i3 = 2;
+        w = wt;
+    }
+
+    i1 = (i3 + 1) % 3;
+    i2 = (i1 + 1) % 3;
+
+    invmatrix(0, 0) = a[i1] - c[i1];
+    invmatrix(0, 1) = b[i1] - c[i1];
+    invmatrix(1, 0) = a[i2] - c[i2];
+    invmatrix(1, 1) = b[i2] - c[i2];
+
+    invmatrix = invmatrix.inverse();
 }
 
 const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
@@ -47,9 +71,15 @@ const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
     if (indeterminate(ba) or indeterminate(bb))
         certain = false;
 
-    IVector3 p = ray.line().origin() + *distance * ray.line().direction();
-    IVector3 b;
-    IVector3 barycentric = matinv * p;
+    IVector3 p  = ray.line().origin() + *distance * ray.line().direction();
+    IVector2 lp;
+    lp[0] = p[i1] - c[i1];
+    lp[1] = p[i2] - c[i2];
+    IVector2 b  = invmatrix * lp;
+    IVector3 barycentric;
+    barycentric[i1] = b[0];
+    barycentric[i2] = b[1];
+    barycentric[i3] = IFloat(1) - b[0] - b[1];
 
     for (int i = 0; i < 3; i++)
     {
