@@ -88,12 +88,6 @@ void Window::paintEvent(QPaintEvent *event)
 
 void Window::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_R)
-    {
-        cout << "Refreshing!" << std::endl;
-        refresh();
-    }
-
     if (event->key() == Qt::Key_S)
     {
         cout << "Saving!" << std::endl;
@@ -130,14 +124,4 @@ void Window::save()
     QMutexLocker l(&mutex);
 
     image->save(filename);
-}
-
-void Window::refresh()
-{
-    QMutexLocker l(&mutex);
-
-    int w = width(), h = height();
-
-    l.unlock();
-    repaint(0, 0, w, h);
 }

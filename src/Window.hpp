@@ -50,7 +50,6 @@ class Window : public QWidget
     public slots:
         void updateImage();
         void save();
-        void refresh();
 
     signals:
         void timeout();
