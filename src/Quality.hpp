@@ -30,7 +30,7 @@ class Quality
 
         inline int maxsubdivisionindex() const
         {
-            return 8;
+            return 32;
         }
 
         inline int subdivisions(int subindex) const
@@ -72,7 +72,7 @@ class Quality
         inline int reflectancemaxsteps(int totalsteps, int step,
                                        int totaldepth, int depth) const
         {
-            return totalsteps - step;
+            return 2 * (totalsteps - step);
         }
 
 
