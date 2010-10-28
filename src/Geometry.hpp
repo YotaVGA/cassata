@@ -41,8 +41,7 @@ class Geometry : public QObject
         void setMaterial(QSharedPointer<SceneMaterial> &mat);
 
         const IFloat value(const Ray &in, const DifferentialSpace &ds,
-                           const Quality &quality, int totalsteps, int step,
-                           int totaldepth, int depth) const;
+                           Quality &quality) const;
 
         virtual const IFloat hit(const Ray &ray, IFloat *distance,
                                  DifferentialSpace *ds) const = 0;

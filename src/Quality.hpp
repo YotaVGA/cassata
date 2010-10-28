@@ -23,6 +23,10 @@
 class Quality
 {
     public:
+        int pixelmaxsteps, pixelstep,
+            depthmaxsteps, depthstep,
+            matmaxsteps,   matstep;
+
         inline const Quality decreased() const
         {
             return Quality();
@@ -30,7 +34,7 @@ class Quality
 
         inline int maxsubdivisionindex() const
         {
-            return 32;
+            return 1;
         }
 
         inline int subdivisions(int subindex) const
@@ -38,7 +42,7 @@ class Quality
             return 2 * subindex;
         }
 
-        inline Float steptollerance(int totalsteps, int steps) const
+        inline Float steptollerance() const
         {
             return 0/*ifloat::div<IFloat>(1,
                     (1 << 2 * (totalsteps - steps)) * 2 * 256).lower()*/;
@@ -64,21 +68,18 @@ class Quality
             return ifloat::div<IFloat>(1, 2 * 256).lower();
         }
 
-        inline int maxdepth(int totalsteps, int steps) const
+        inline int maxdepth() const
         {
             return 1;
         }
 
-        inline int reflectancemaxsteps(int totalsteps, int step,
-                                       int totaldepth, int depth) const
+        inline int reflectancemaxsteps() const
         {
-            return 2 * (totalsteps - step);
+            return 2 * (pixelmaxsteps - pixelstep);
         }
 
 
-        inline Float reflectancetollerance(int totalsteps, int step,
-                                            int totaldepth, int depth,
-                                            int totalsubdiv, int matstep) const
+        inline Float reflectancetollerance() const
         {
             return 0;
             /*return ifloat::div<IFloat>(1,

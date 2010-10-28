@@ -29,8 +29,7 @@ class ScenePinhole : public SceneCamera
         Quality q;
         IVector3 o;
 
-        const IFloat iterate(IFloat x, IFloat y, int totalsteps, int steps,
-                             const Quality &quality);
+        const IFloat iterate(IFloat x, IFloat y, Quality &quality);
 
     public:
         ScenePinhole();

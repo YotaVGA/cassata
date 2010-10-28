@@ -35,10 +35,8 @@ class SceneDiffuse : public SceneMaterial
                                QSharedPointer<SceneElement> &object);
 
         virtual const IFloat emission(const DifferentialSpace &ds,
-                                      const Quality &quality,
                                       const IVector3 &out) const;
         virtual const IFloat reflection(const DifferentialSpace &ds,
-                                        const Quality &quality,
                                         const IVector3 &in,
                                         const IVector3 &out) const;
 };

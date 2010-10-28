@@ -32,25 +32,20 @@ class SceneMaterial : public SceneElement
                                QSharedPointer<SceneElement> &object);
 
         virtual const IFloat emission(const DifferentialSpace &ds,
-                                      const Quality &quality,
                                       const IVector3 &out) const = 0;
         virtual const IFloat reflection(const DifferentialSpace &ds,
-                                        const Quality &quality,
                                         const IVector3 &in,
                                         const IVector3 &out) const = 0;
 
         virtual const IFloat value(const Ray &in, const DifferentialSpace &ds,
-                                   const Quality &quality, int totalsteps, int step,
-                                   int totaldepth, int depth) const;
+                                   Quality &quality) const;
 
     protected:
         virtual const IFloat itervalue(const IVector3 &in,
                                        const DifferentialSpace &ds,
-                                       const Quality &quality,
-                                       const IAngle &angle, const IFloat &phi,
-                                       const IFloat &theta, int totalsteps,
-                                       int step, int totaldepth, int depth,
-                                       int totalsubdiv, int matstep) const;
+                                       Quality &quality, const IAngle &angle,
+                                       const IFloat &phi,
+                                       const IFloat &theta) const;
 };
 
 #endif

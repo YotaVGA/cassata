@@ -59,9 +59,10 @@ const QColor ScenePinhole::pixel(int x, int y)
 
         for (int qsteps = 0; qsteps < quality.quality_steps(); qsteps++)
         {
-            int subdiv = quality.subdivisions(i);
+            quality.pixelstep = quality.pixelmaxsteps =
+                quality.subdivisions(i);
             IFloat tempval = iterate(IFloat(x, x + 1), IFloat(y, y + 1),
-                                     subdiv, subdiv, quality);
+                                     quality);
 
             using namespace ifloat;
 
@@ -95,19 +96,26 @@ gotvalue:
     return QColor(qvalue, qvalue, qvalue);
 }
 
-const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int totalsteps,
-                                   int steps, const Quality &quality)
+const IFloat ScenePinhole::iterate(IFloat x, IFloat y, Quality &quality)
 {
     IVector3 d(Tx - S * x, Ty - S * y, -1);
     d.normalize();
-    int maxdepth = quality.maxdepth(totalsteps, steps);
-    IFloat s = refscene->sample(Ray(ILine(o, d)), quality, totalsteps, steps,
-                                maxdepth, maxdepth);
+    quality.depthstep = quality.depthmaxsteps = quality.maxdepth();
+    IFloat s = refscene->sample(Ray(ILine(o, d)), quality);
 
-    if (!steps or width(s) <= quality.steptollerance(totalsteps, steps))
+    if (!quality.pixelstep or width(s) <= quality.steptollerance())
     {
         return s;
     }
+
+    IFloat wx = IFloat(x.upper()) - IFloat(x.lower()),
+           wy = IFloat(y.upper()) - IFloat(y.lower());
+
+    using namespace ifloat::compare::certain;
+    IFloat invmul = wx * wy;
+    if (invmul == IFloat(0))
+        return s;
+
 
     IFloat value;
     std::pair<IFloat, IFloat> xp = bisect(x),
@@ -116,17 +124,17 @@ const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int totalsteps,
            wx2 = IFloat(xp.second.upper()) - IFloat(xp.second.lower()),
            wy1 = IFloat(yp.first.upper())  - IFloat(yp.first.lower()),
            wy2 = IFloat(yp.second.upper()) - IFloat(yp.second.lower());
-    IFloat v1 = iterate(xp.first,  yp.first,  totalsteps, steps - 1, quality),
-           v2 = iterate(xp.first,  yp.second, totalsteps, steps - 1, quality),
-           v3 = iterate(xp.second, yp.first,  totalsteps, steps - 1, quality),
-           v4 = iterate(xp.second, yp.second, totalsteps, steps - 1, quality);
+    quality.pixelstep--;
+    IFloat v1 = iterate(xp.first,  yp.first,  quality),
+           v2 = iterate(xp.first,  yp.second, quality),
+           v3 = iterate(xp.second, yp.first,  quality),
+           v4 = iterate(xp.second, yp.second, quality);
+    quality.pixelstep++;
 
     IFloat wv1 = v1 * wx1 * wy1,
            wv2 = v2 * wx1 * wy2,
            wv3 = v3 * wx2 * wy1,
            wv4 = v4 * wx2 * wy2;
-    IFloat wx = IFloat(x.upper()) - IFloat(x.lower()),
-           wy = IFloat(y.upper()) - IFloat(y.lower());
 
-    return (wv1 + wv2 + wv3 + wv4) / (wx * wy);
+    return (wv1 + wv2 + wv3 + wv4) / invmul;
 }

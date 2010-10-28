@@ -57,14 +57,12 @@ void SceneDiffuse::construct(const QDomNode &node, Scene &scene,
 }
 
 const IFloat SceneDiffuse::emission(const DifferentialSpace &ds,
-                                    const Quality &quality,
                                     const IVector3 &out) const
 {
     return -emissivity * out.dot(ds.normal());
 }
 
 const IFloat SceneDiffuse::reflection(const DifferentialSpace &ds,
-                                      const Quality &quality,
                                       const IVector3 &in,
                                       const IVector3 &out) const
 {
