@@ -28,12 +28,14 @@ class DifferentialSpace
         IVector3 p;
         IVector3 n;
         IVector2 uvc;
+        qint64 obj;
 
     public:
         inline DifferentialSpace(const IVector3 &point = IVector3(),
                                  const IVector3 normal = IVector3(),
-                                 const IVector2 &uv = IVector2()) :
-            p(point), n(normal), uvc(uv)
+                                 const IVector2 &uv = IVector2(),
+                                 qint64 object = -1) :
+            p(point), n(normal), uvc(uv), obj(object)
         {
         }
 
@@ -50,6 +52,11 @@ class DifferentialSpace
         inline const IVector2 &uv() const
         {
             return uvc;
+        }
+
+        inline const qint64 &object() const
+        {
+            return obj;
         }
 };
 

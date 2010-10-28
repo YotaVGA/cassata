@@ -30,7 +30,7 @@ class Quality
 
         inline int maxsubdivisionindex() const
         {
-            return 256;
+            return 8;
         }
 
         inline int subdivisions(int subindex) const
@@ -40,8 +40,8 @@ class Quality
 
         inline Float steptollerance(int totalsteps, int steps) const
         {
-            return ifloat::div<IFloat>(1,
-                    (1 << (totalsteps - steps)) * 2 * 256).lower();
+            return 0/*ifloat::div<IFloat>(1,
+                    (1 << 2 * (totalsteps - steps)) * 2 * 256).lower()*/;
         }
 
         inline bool stopIteration() const
@@ -66,7 +66,23 @@ class Quality
 
         inline int maxdepth(int totalsteps, int steps) const
         {
-            return 2;
+            return 1;
+        }
+
+        inline int reflectancemaxsteps(int totalsteps, int step,
+                                       int totaldepth, int depth) const
+        {
+            return totalsteps - step;
+        }
+
+
+        inline Float reflectancetollerance(int totalsteps, int step,
+                                            int totaldepth, int depth,
+                                            int totalsubdiv, int matstep) const
+        {
+            return 0;
+            /*return ifloat::div<IFloat>(1,
+                    (1 << (2 * (totalsteps - step))) * 2 * 256).lower();*/
         }
 };
 

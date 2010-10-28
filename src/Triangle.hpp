@@ -28,10 +28,12 @@ class Triangle : public Geometry
         IVector3 a, b, c;
         IPlane   plane;
         IMatrix2 invmatrix;
+        qint64   object;
         char     i1, i2, i3;
 
     public:
-        Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc);
+        Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc,
+                 qint64 object);
 
         virtual const IFloat hit(const Ray &ray, IFloat *distance,
                                  DifferentialSpace *ds) const;

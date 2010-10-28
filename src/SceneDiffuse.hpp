@@ -36,11 +36,11 @@ class SceneDiffuse : public SceneMaterial
 
         virtual const IFloat emission(const DifferentialSpace &ds,
                                       const Quality &quality,
-                                      const Ray &out) const;
+                                      const IVector3 &out) const;
         virtual const IFloat reflection(const DifferentialSpace &ds,
                                         const Quality &quality,
-                                        const Ray &in,
-                                        const Ray &out) const;
+                                        const IVector3 &in,
+                                        const IVector3 &out) const;
 };
 
 #endif

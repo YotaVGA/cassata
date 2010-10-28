@@ -40,13 +40,12 @@ void SceneDiffuse::construct(const QDomNode &node, Scene &scene,
         if (name == "emissivity")
         {
             if (emissivity_set)
-                throw QString("Only an emission can be set").
+                throw QString("Only an emissivity can be set").
                     arg(i.lineNumber()).arg(i.columnNumber());
             emissivity = elem.text().toDouble();
             emissivity_set = true;
         }
-
-        if (name == "reflectivity")
+        else if (name == "reflectivity")
         {
             if (reflectivity_set)
                 throw QString("Only a reflectivity can be set").
@@ -59,15 +58,15 @@ void SceneDiffuse::construct(const QDomNode &node, Scene &scene,
 
 const IFloat SceneDiffuse::emission(const DifferentialSpace &ds,
                                     const Quality &quality,
-                                    const Ray &out) const
+                                    const IVector3 &out) const
 {
-    return emissivity;
+    return -emissivity * out.dot(ds.normal());
 }
 
 const IFloat SceneDiffuse::reflection(const DifferentialSpace &ds,
                                       const Quality &quality,
-                                      const Ray &in,
-                                      const Ray &out) const
+                                      const IVector3 &in,
+                                      const IVector3 &out) const
 {
     return reflectivity;
 }

@@ -19,8 +19,10 @@
 
 #include "Triangle.hpp"
 
-Triangle::Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc) :
-    Geometry(scene), a(pa), b(pb), c(pc), plane(IPlane::Through(pa, pb, pc))
+Triangle::Triangle(Scene &scene, IVector3 pa, IVector3 pb, IVector3 pc,
+        qint64 obj) :
+    Geometry(scene), a(pa), b(pb), c(pc), plane(IPlane::Through(pa, pb, pc)),
+    object(obj)
 {
     using namespace ifloat;
 
@@ -100,7 +102,7 @@ const IFloat Triangle::hit(const Ray &ray, IFloat *distance,
                           hull(normal.y(), -normal.y()),
                           hull(normal.z(), -normal.z()));
 
-    *ds = DifferentialSpace(p, normal);
+    *ds = DifferentialSpace(p, normal, IVector2(), object);
 
     if (certain)
         return 1;

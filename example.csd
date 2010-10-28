@@ -7,14 +7,13 @@
     </image>
     <pinhole/>
     <diffuse id="lightmaterial">
-        <emissivity>1</emissivity>
+        <emissivity>2</emissivity>
     </diffuse>
     <diffuse id="meshmaterial">
-        <reflectivity>0.8</reflectivity>
+        <reflectivity>0.7</reflectivity>
     </diffuse>
     <mesh>
         <material id="lightmaterial"/>
-        <!--back wall-->
         <polygon>
             <point>-0.5  1 -2  </point>
             <point>-0.5  1 -1.5</point>
@@ -28,6 +27,7 @@
     </mesh>
     <mesh>
         <material id="meshmaterial"/>
+        <!--back wall-->
         <polygon>
             <point>-1 -1 -2.5</point>
             <point>-1  1 -2.5</point>
@@ -37,6 +37,17 @@
             <point>-1 -1 -2.5</point>
             <point> 1 -1 -2.5</point>
             <point> 1  1 -2.5</point>
+        </polygon>
+        <!--floor-->
+        <polygon>
+            <point>-1 -1 -2.5</point>
+            <point>-1 -1  0  </point>
+            <point> 1 -1  0  </point>
+        </polygon>
+        <polygon>
+            <point>-1 -1 -2.5</point>
+            <point> 1 -1 -2.5</point>
+            <point> 1 -1 0   </point>
         </polygon>
     </mesh>
 </scene>

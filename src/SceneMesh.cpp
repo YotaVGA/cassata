@@ -78,8 +78,8 @@ void SceneMesh::construct(const QDomNode &node, Scene &scene,
 
             scene.element("geometry")["list"] <<
                 QSharedPointer<QObject>(new Triangle(scene, points[0],
-                                                     points[1], points[2]));
-            stop++;
+                                                     points[1], points[2],
+                                                     stop++));
         }
         else if (name == "material")
         {

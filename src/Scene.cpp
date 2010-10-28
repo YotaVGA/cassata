@@ -134,13 +134,15 @@ const IFloat Scene::hit(const Ray &ray, IFloat *distance,
 
 const IFloat Scene::value(const Ray &in, const DifferentialSpace &ds,
                           const Quality &quality, qint64 object,
-                          int totaldepth, int depth)
+                          int totalsteps, int step, int totaldepth, int depth)
 {
-    return geometries[object]->value(in, ds, quality, totaldepth, depth);
+    return geometries[object]->value(in, ds, quality, totalsteps, step,
+                                     totaldepth, depth);
 }
 
 const IFloat Scene::sample(const Ray &ray, const Quality &quality,
-                           int totaldepth, int depth, qint64 skip)
+                           int totalsteps, int step, int totaldepth,
+                           int depth, qint64 skip)
 {
     if (quality.stopIteration())
         return limits(ray);
@@ -164,12 +166,14 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
             if (temphit == IFloat(1))
             {
                 distance = tempdistance;
-                val = value(ray, ds, quality, i, totaldepth, depth);
+                val = value(ray, ds, quality, i, totalsteps, step,
+                            totaldepth, depth);
             }
             else
             {
                 distance = hull(distance, tempdistance);
-                val = value(ray, ds, quality, i, totaldepth, depth) *
+                val = value(ray, ds, quality, i, totalsteps, step, totaldepth,
+                            depth) *
                       temphit + hull(max(hitp - temphit, IFloat(0)), 
                                      min(hitp, IFloat(1) - temphit)) * val;
             }
@@ -182,13 +186,15 @@ const IFloat Scene::sample(const Ray &ray, const Quality &quality,
             distance = hull(distance, tempdistance);
             val = val * hitp + hull(max(temphit - hitp, IFloat(0)),
                       min(temphit, IFloat(1) - hitp)) *
-                  value(ray, ds, quality, i, totaldepth, depth);
+                  value(ray, ds, quality, i, totalsteps, step, totaldepth,
+                        depth);
         }
         else
         {
             distance = hull(distance, tempdistance);
             val = hull(temphit, max(hitp - temphit, IFloat(0))) *
-                    value(ray, ds, quality, i, totaldepth, depth) +
+                    value(ray, ds, quality, i, totalsteps, step, totaldepth,
+                          depth) +
                   hull(hitp,    max(temphit - hitp, IFloat(0))) *
                     val;
         }

@@ -101,9 +101,10 @@ const IFloat ScenePinhole::iterate(IFloat x, IFloat y, int totalsteps,
     IVector3 d(Tx - S * x, Ty - S * y, -1);
     d.normalize();
     int maxdepth = quality.maxdepth(totalsteps, steps);
-    IFloat s = refscene->sample(Ray(ILine(o, d)), quality, maxdepth, maxdepth);
+    IFloat s = refscene->sample(Ray(ILine(o, d)), quality, totalsteps, steps,
+                                maxdepth, maxdepth);
 
-    if (!steps || width(s) < quality.steptollerance(totalsteps, steps))
+    if (!steps or width(s) <= quality.steptollerance(totalsteps, steps))
     {
         return s;
     }
