@@ -38,17 +38,25 @@ const IFloat SceneMaterial::value(const Ray &in, const DifferentialSpace &ds,
     IFloat v = emission(ds, inv);
 
     IFloat ref = 0;
+    IFloat value;
     if (quality.depthstep)
     {
-        /* TODO: Fix hul area weight */
         quality.depthstep--;
         IAngle angle(acos(normal.dot(z)), axis[0], axis[1], axis[2]);
-        quality.matmaxsteps = quality.matstep = quality.reflectancemaxsteps();
-        ref = itervalue(inv, ds, quality, angle, hull(IFloat(0), PI2),
-                        hull(IFloat(0), PI_H));
+        int maxsteps = quality.reflectancemaxsteps();
+        for (int i = 0; i <= maxsteps; i++)
+        {
+        /* TODO: Fix hull area weight */
+            quality.matmaxsteps = quality.matstep = i;
+            ref = itervalue(inv, ds, quality, angle, hull(IFloat(0), PI2),
+                            hull(IFloat(0), PI_H));
+            value = v + ref;
+            if (width(value) < 0.1)
+                break;
+        }
         quality.depthstep++;
     }
-    return v + ref;
+    return value;
 }
 
 const IFloat SceneMaterial::itervalue(const IVector3 &in,
@@ -67,9 +75,8 @@ const IFloat SceneMaterial::itervalue(const IVector3 &in,
     if (r == IFloat(0))
         return 0;
 
-    IFloat v = r * IFloat(1) * -out.dot(ds.normal());
-    //IFloat v = r * sceneptr->sample(Ray(ILine(ds.point(), out)), quality,
-    //                                ds.object()) * -out.dot(ds.normal());
+    IFloat v = r * sceneptr->sample(Ray(ILine(ds.point(), out)), quality,
+                                    ds.object()) * -out.dot(ds.normal());
 
     if (!quality.matstep or width(v) <= quality.reflectancetollerance())
         return v;
