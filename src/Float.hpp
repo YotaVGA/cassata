@@ -279,4 +279,7 @@ inline IFloat operator-(const IFloat &a,const IFloat &b)
     return IFloat(-r, a.b - b.a);
 }
 
+IFloat operator*(const IFloat &a,const IFloat &b);
+IFloat operator/(const IFloat &a,const IFloat &b);
+
 #endif

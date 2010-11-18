@@ -96,6 +96,33 @@ IFloat operator/(const IFloat &a,const IFloat &b)
 {
     ProtectRounding pr;
 
-    return IFloat();
+    if (a.empty or b.empty)
+        return IFloat();
+
+    if (a <= 0 and !(b <= 0))
+        return -(-a / b);
+    
+    if (!(a <= 0) and b <= 0)
+        return -(a / -b);
+
+    if (a <= 0 and b <= 0)
+        return -a / -b;
+
+    Float r; // For rounding
+
+    if (b >= 0)
+    {
+        if (a >= 0)
+        {
+            r = a.a / -b.b; // For rounding
+            return IFloat(-r, a.b / b.a);
+        }
+
+        r = a.a / -b.a; // For rounding
+        return IFloat(-r, a.b / b.a);
+    }
+
+    return IFloat(-std::numeric_limits<Float>::infinity(),
+                   std::numeric_limits<Float>::infinity());
 }
 
