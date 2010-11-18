@@ -22,7 +22,7 @@
 
 import os
 
-src = ["main.cpp"]
+src = ["main.cpp", "Float.cpp"]
 
 opts = Variables('options.py')
 opts.Add(BoolVariable('DEBUG', 'If true the targets are build in debug mode', \
@@ -35,7 +35,7 @@ opts.Add('CPPPATH', 'Header directorys', '/usr/include/eigen2')
 env = Environment(options  = opts, \
                   tools    = ['default', 'colors', 'defmessages', 'qt4'], \
                   toolpath = ['tools'],
-                  LIBS     = ['crlibm'],
+                  LIBS     = ['m', 'crlibm'],
                   QT4_MOC  = 'moc')
 
 Help("""Use one or more of the subsequent targets:
@@ -64,6 +64,7 @@ if env['DEBUG']:
     env.Append(CXXFLAGS = '-g')
 
 #env.Append(CXXFLAGS = '-ffloat-store') #GCC only
+env.Append(CXXFLAGS = '-std=gnu++0x') #GCC only
 
 d = lambda s: os.path.join(env['BUILDDIR'], s)
 
