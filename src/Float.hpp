@@ -23,18 +23,23 @@
 #include <limits>
 #include <algorithm>
 #include <cfenv>
+#include <crlibm.h>
 #include <boost/logic/tribool.hpp>
 
 typedef double Float;
 class IFloat;
 
+/***********************************************
+ ***** CLASS FOR FLOATING ROUNDING CONTROL *****
+ ***********************************************/
 class FloatingStatus
 {
     friend class IFloat;
 
     protected:
-        static bool prot;
         static int  stdrounding;
+        static bool prot;
+        static bool first_init;
 
         FloatingStatus();
 
@@ -63,6 +68,9 @@ class FloatingStatus
         }
 };
 
+/*****************************************
+ ***** CLASS FOR ARITHMETIC INTERVAL *****
+ *****************************************/
 class IFloat
 {
     protected:
@@ -95,6 +103,7 @@ class IFloat
 
         friend IFloat intersect(const IFloat &a, const IFloat &b);
         friend IFloat hull     (const IFloat &a, const IFloat &b);
+        friend IFloat overlap  (const IFloat &a, const IFloat &b);
 
         friend boost::logic::tribool operator< (const IFloat &a,
                                                 const IFloat &b);
@@ -115,6 +124,10 @@ class IFloat
         friend IFloat operator/(const IFloat &a,const IFloat &b);
 
     public:
+        /* Constants */
+        static const IFloat zero, one;
+        static const IFloat half_pi, pi, twice_pi;
+
         inline static FloatingStatus roundStatus()
         {
             return round;
@@ -152,8 +165,17 @@ class IFloat
         IFloat &operator*=(IFloat &b);
         IFloat &operator/=(IFloat &b);
 
+        bool contains(const Float  &val) const;
+        bool contains(const IFloat &ifloat) const;
+        bool contains_zero() const;
+        bool properContains(const IFloat &ifloat) const;
+        bool isEmpty() const;
+        bool isASingleton() const;
 };
 
+/************************************************
+ ***** CLASSES FOR FAST ROUNDING MANAGEMENT *****
+ ************************************************/
 class ProtectRounding
 {
     protected:
@@ -192,6 +214,9 @@ class UnprotectRounding
         }
 };
 
+/******************************************************
+ ***** INLINE ARITHMETIC INTERVAL IMPLEMENTATIONS *****
+ ******************************************************/
 inline Float lower(const IFloat &ifloat)
 {
     return ifloat.a;
@@ -309,6 +334,17 @@ inline IFloat hull(const IFloat &a, const IFloat &b)
         return a;
 
     return IFloat(std::min(a.a, b.a), std::max(a.b, b.b));
+}
+
+inline IFloat overlap(const IFloat &a, const IFloat &b)
+{
+    if (a.empty or b.empty)
+        return false;
+
+    if (a < b or b < a)
+        return false;
+
+    return true;
 }
 
 inline boost::logic::tribool operator<(const IFloat &a, const IFloat &b)
@@ -434,6 +470,54 @@ inline IFloat &IFloat::operator/=(IFloat &b)
 {
     *this = *this / b;
     return *this;
+}
+
+inline bool IFloat::contains(const Float  &val) const
+{
+    if (empty)
+        return false;
+
+    if (a > val or b < val)
+        return false;
+
+    return true;
+}
+
+inline bool IFloat::contains(const IFloat &ifloat) const
+{
+    if (empty)
+        return false;
+
+    if (a > ifloat.a or b < ifloat.b)
+        return false;
+
+    return true;
+}
+
+inline bool IFloat::contains_zero() const
+{
+    if (empty)
+        return false;
+
+    if (a > 0 or b < 0)
+        return false;
+
+    return true;
+}
+
+inline bool IFloat::properContains(const IFloat &ifloat) const
+{
+    return contains(ifloat) and *this != ifloat;
+}
+
+inline bool IFloat::isEmpty() const
+{
+    return empty;
+}
+
+inline bool IFloat::isASingleton() const
+{
+    return !empty and a == b;
 }
 
 #endif

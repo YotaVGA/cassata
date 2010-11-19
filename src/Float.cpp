@@ -19,12 +19,52 @@
 
 #include "Float.hpp"
 
+class setupConstants
+{
+    public:
+        setupConstants()
+        {
+            crlibm_init();
+        }
+
+        inline IFloat half_pi() const
+        {
+            return IFloat(-(Float)(-acos_rd(0)), acos_ru(0));
+        }
+
+        inline IFloat pi() const
+        {
+            return IFloat(-(Float)(-acos_rd(-1)), acos_ru(-1));
+        }
+
+        /* The twice_pi is a working stub: that is not with the best
+         * precision
+         */
+        inline IFloat twice_pi() const
+        {
+            return IFloat(-(Float)(-2 * acos_rd(-1)), 2 * acos_ru(-1));
+        }
+};
+static setupConstants constants;
+
 bool FloatingStatus::prot        = true;
+bool FloatingStatus::first_init  = true;
 int  FloatingStatus::stdrounding = fegetround();
+
+const IFloat IFloat::zero = 1;
+const IFloat IFloat::one = 1;
+const IFloat IFloat::half_pi  = constants.half_pi();
+const IFloat IFloat::pi       = constants.pi();
+const IFloat IFloat::twice_pi = constants.twice_pi();
 
 FloatingStatus::FloatingStatus()
 {
-    fesetround(FE_UPWARD);
+    if (first_init)
+    {
+        stdrounding = fegetround();
+        fesetround(FE_UPWARD);
+        first_init = false;
+    }
 }
 
 IFloat operator*(const IFloat &a,const IFloat &b)
