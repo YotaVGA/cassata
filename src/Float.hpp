@@ -95,8 +95,10 @@ class IFloat
         friend IFloat abs(const IFloat &ifloat);
 
         friend IFloat square(const IFloat &ifloat);
-        /*friend IFloat pow   (const IFloat &ifloat, int n);
-        friend IFloat nroot (const IFloat &ifloat, int n);*/
+        //TODO: cubic, pow, nroot
+        friend IFloat cubic (const IFloat &ifloat);
+        friend IFloat pow   (const IFloat &ifloat, int n);
+        friend IFloat nroot (const IFloat &ifloat, int n);
 
         friend std::pair<IFloat, IFloat> div(const IFloat &a, const IFloat &b);
         friend IFloat multiplicativeInverse(const IFloat &ifloat);
@@ -104,6 +106,39 @@ class IFloat
         friend IFloat intersect(const IFloat &a, const IFloat &b);
         friend IFloat hull     (const IFloat &a, const IFloat &b);
         friend IFloat overlap  (const IFloat &a, const IFloat &b);
+
+        friend IFloat trunc (const IFloat &ifloat);
+        friend IFloat ceil  (const IFloat &ifloat);
+        friend IFloat floor (const IFloat &ifloat);
+        friend IFloat round (const IFloat &ifloat);
+        friend IFloat lround(const IFloat &ifloat);
+
+        //TODO: fmod, normfmod, exp, expm1, log, log1p, log2, log10, sin, cos,
+        //      tan, asin, acos, atan, sinh, cosh, sinpi, cospi, tanpi, atanpi,
+        //      sqrt, cbrt, pow
+        friend IFloat fmod    (const IFloat &ifloat);
+        friend IFloat normfmod(const IFloat &ifloat);
+        friend IFloat exp     (const IFloat &ifloat);
+        friend IFloat expm1   (const IFloat &ifloat);
+        friend IFloat log     (const IFloat &ifloat);
+        friend IFloat log1p   (const IFloat &ifloat);
+        friend IFloat log2    (const IFloat &ifloat);
+        friend IFloat log10   (const IFloat &ifloat);
+        friend IFloat sin     (const IFloat &ifloat);
+        friend IFloat cos     (const IFloat &ifloat);
+        friend IFloat tan     (const IFloat &ifloat);
+        friend IFloat asin    (const IFloat &ifloat);
+        friend IFloat acos    (const IFloat &ifloat);
+        friend IFloat atan    (const IFloat &ifloat);
+        friend IFloat sinh    (const IFloat &ifloat);
+        friend IFloat cosh    (const IFloat &ifloat);
+        friend IFloat sinpi   (const IFloat &ifloat);
+        friend IFloat cospi   (const IFloat &ifloat);
+        friend IFloat tanpi   (const IFloat &ifloat);
+        friend IFloat atanpi  (const IFloat &ifloat);
+        friend IFloat sqrt    (const IFloat &ifloat);
+        friend IFloat cbrt    (const IFloat &ifloat);
+        friend IFloat pow     (const IFloat &a, const IFloat &b);
 
         friend boost::logic::tribool operator< (const IFloat &a,
                                                 const IFloat &b);
@@ -214,9 +249,9 @@ class UnprotectRounding
         }
 };
 
-/******************************************************
- ***** INLINE ARITHMETIC INTERVAL IMPLEMENTATIONS *****
- ******************************************************/
+/*********************************************************************
+ ***** INLINE ARITHMETIC INTERVAL IMPLEMENTATIONS AND PROTOTYPES *****
+ *********************************************************************/
 inline Float lower(const IFloat &ifloat)
 {
     return ifloat.a;
@@ -315,6 +350,9 @@ inline IFloat square(const IFloat &ifloat)
     return r * r;
 }
 
+std::pair<IFloat, IFloat> div(const IFloat &a, const IFloat &b);
+IFloat multiplicativeInverse(const IFloat &ifloat);
+
 inline IFloat intersect(const IFloat &a, const IFloat &b)
 {
     if (a.empty or b.empty)
@@ -345,6 +383,46 @@ inline IFloat overlap(const IFloat &a, const IFloat &b)
         return false;
 
     return true;
+}
+
+inline IFloat trunc(const IFloat &ifloat)
+{
+    if (ifloat.empty)
+        return IFloat();
+
+    return IFloat(trunc(ifloat.a), trunc(ifloat.b));
+}
+
+inline IFloat ceil(const IFloat &ifloat)
+{
+    if (ifloat.empty)
+        return IFloat();
+
+    return IFloat(ceil(ifloat.a), ceil(ifloat.b));
+}
+
+inline IFloat floor(const IFloat &ifloat)
+{
+    if (ifloat.empty)
+        return IFloat();
+
+    return IFloat(floor(ifloat.a), floor(ifloat.b));
+}
+
+inline IFloat round(const IFloat &ifloat)
+{
+    if (ifloat.empty)
+        return IFloat();
+
+    return IFloat(round(ifloat.a), round(ifloat.b));
+}
+
+inline IFloat lround(const IFloat &ifloat)
+{
+    if (ifloat.empty)
+        return IFloat();
+
+    return IFloat(lround(ifloat.a), lround(ifloat.b));
 }
 
 inline boost::logic::tribool operator<(const IFloat &a, const IFloat &b)
