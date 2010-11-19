@@ -29,10 +29,10 @@ FloatingStatus::FloatingStatus()
 
 IFloat operator*(const IFloat &a,const IFloat &b)
 {
-    ProtectRounding pr;
-
     if (a.empty or b.empty)
         return IFloat();
+
+    ProtectRounding pr;
 
     bool posa = a.b >= 0,
          posb = b.b >= 0,
@@ -94,8 +94,6 @@ IFloat operator*(const IFloat &a,const IFloat &b)
 
 IFloat operator/(const IFloat &a,const IFloat &b)
 {
-    ProtectRounding pr;
-
     if (a.empty or b.empty)
         return IFloat();
 
@@ -108,21 +106,108 @@ IFloat operator/(const IFloat &a,const IFloat &b)
     if (a <= 0 and b <= 0)
         return -a / -b;
 
+    if (!(b >= 0))
+        return IFloat(-std::numeric_limits<Float>::infinity(),
+                       std::numeric_limits<Float>::infinity());
+
+    ProtectRounding pr;
+
     Float r; // For rounding
+
+    if (a >= 0)
+    {
+        r = a.a / -b.b; // For rounding
+        return IFloat(-r, a.b / b.a);
+    }
+
+    r = a.a / -b.a; // For rounding
+    return IFloat(-r, a.b / b.a);
+}
+
+std::pair<IFloat, IFloat> div(const IFloat &a, const IFloat &b)
+{
+    std::pair<IFloat, IFloat> r;
+
+    if (a.empty or b.empty)
+        return r;
+
+    IFloat tf;
+
+    if (a <= 0 and !(b <= 0))
+    {
+        r = div(-a, b);
+        tf       =  r.first;
+        r.first  = -r.second;
+        r.second = -tf;
+        return r;
+    }
+    
+    if (!(a <= 0) and b <= 0)
+    {
+        r = div(a, -b);
+        tf       =  r.first;
+        r.first  = -r.second;
+        r.second = -tf;
+        return r;
+    }
+
+    if (a <= 0 and b <= 0)
+        return div(-a, -b);
+
+    ProtectRounding pr;
+
+    Float t;
 
     if (b >= 0)
     {
         if (a >= 0)
         {
-            r = a.a / -b.b; // For rounding
-            return IFloat(-r, a.b / b.a);
+            t = a.a / -b.b; // For rounding
+            r.first = IFloat(-t, a.b / b.a);
+            return r;
         }
 
-        r = a.a / -b.a; // For rounding
-        return IFloat(-r, a.b / b.a);
+        t = a.a / -b.a; // For rounding
+        r.first = IFloat(-t, a.b / b.a);
+        return r;
     }
 
-    return IFloat(-std::numeric_limits<Float>::infinity(),
-                   std::numeric_limits<Float>::infinity());
+    Float inf = std::numeric_limits<Float>::infinity();
+
+    if (a >= 0)
+    {
+        r.first = IFloat(-inf, a.a / b.a);
+
+        t = a.a / -b.b; // For rounding
+        r.second = IFloat(-t, inf);
+
+        return r;
+    }
+
+    r.first = IFloat(-inf, std::max(a.a / b.b, a.b / b.a));
+
+    t = std::max(a.a / -b.a, a.b / -b.b); // For rounding
+    r.second = IFloat(-t, inf);
+
+    return r;
 }
 
+IFloat multiplicativeInverse(const IFloat &ifloat)
+{
+    if (ifloat.empty)
+        return IFloat();
+
+    if (ifloat <= 0)
+        return -multiplicativeInverse(-ifloat);
+
+    if (!(ifloat >= 0))
+        return IFloat(-std::numeric_limits<Float>::infinity(),
+                       std::numeric_limits<Float>::infinity());
+
+    ProtectRounding pr;
+
+    Float r; // For rounding
+
+    r = 1 / -ifloat.b; // For rounding
+    return IFloat(-r, 1 / ifloat.a);
+}
