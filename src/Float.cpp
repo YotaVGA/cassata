@@ -51,8 +51,13 @@ bool FloatingStatus::prot        = true;
 bool FloatingStatus::first_init  = true;
 int  FloatingStatus::stdrounding = fegetround();
 
-const IFloat IFloat::zero = 1;
-const IFloat IFloat::one = 1;
+const IFloat IFloat::empty = IFloat();
+const IFloat IFloat::zero  = 0;
+const IFloat IFloat::one   = 1;
+
+const IFloat IFloat::pos = IFloat(0, std::numeric_limits<Float>::infinity());
+const IFloat IFloat::neg = IFloat(-std::numeric_limits<Float>::infinity(), 0);
+
 const IFloat IFloat::half_pi  = constants.half_pi();
 const IFloat IFloat::pi       = constants.pi();
 const IFloat IFloat::twice_pi = constants.twice_pi();
@@ -69,8 +74,8 @@ FloatingStatus::FloatingStatus()
 
 IFloat operator*(const IFloat &a,const IFloat &b)
 {
-    if (a.empty or b.empty)
-        return IFloat();
+    if (a.isempty or b.isempty)
+        return IFloat::empty;
 
     ProtectRounding pr;
 
@@ -134,8 +139,8 @@ IFloat operator*(const IFloat &a,const IFloat &b)
 
 IFloat operator/(const IFloat &a,const IFloat &b)
 {
-    if (a.empty or b.empty)
-        return IFloat();
+    if (a.isempty or b.isempty)
+        return IFloat::empty;
 
     if (a <= 0 and !(b <= 0))
         return -(-a / b);
@@ -149,6 +154,9 @@ IFloat operator/(const IFloat &a,const IFloat &b)
     if (!(b >= 0))
         return IFloat(-std::numeric_limits<Float>::infinity(),
                        std::numeric_limits<Float>::infinity());
+
+    if (b == IFloat::zero)
+        return IFloat::empty;
 
     ProtectRounding pr;
 
@@ -164,18 +172,18 @@ IFloat operator/(const IFloat &a,const IFloat &b)
     return IFloat(-r, a.b / b.a);
 }
 
-std::pair<IFloat, IFloat> div(const IFloat &a, const IFloat &b)
+std::pair<IFloat, IFloat> splitdiv(const IFloat &a, const IFloat &b)
 {
     std::pair<IFloat, IFloat> r;
 
-    if (a.empty or b.empty)
+    if (a.isempty or b.isempty)
         return r;
 
     IFloat tf;
 
     if (a <= 0 and !(b <= 0))
     {
-        r = div(-a, b);
+        r = splitdiv(-a, b);
         tf       =  r.first;
         r.first  = -r.second;
         r.second = -tf;
@@ -184,7 +192,7 @@ std::pair<IFloat, IFloat> div(const IFloat &a, const IFloat &b)
     
     if (!(a <= 0) and b <= 0)
     {
-        r = div(a, -b);
+        r = splitdiv(a, -b);
         tf       =  r.first;
         r.first  = -r.second;
         r.second = -tf;
@@ -192,7 +200,10 @@ std::pair<IFloat, IFloat> div(const IFloat &a, const IFloat &b)
     }
 
     if (a <= 0 and b <= 0)
-        return div(-a, -b);
+        return splitdiv(-a, -b);
+
+    if (b == IFloat::zero)
+        return r;
 
     ProtectRounding pr;
 
@@ -234,8 +245,8 @@ std::pair<IFloat, IFloat> div(const IFloat &a, const IFloat &b)
 
 IFloat multiplicativeInverse(const IFloat &ifloat)
 {
-    if (ifloat.empty)
-        return IFloat();
+    if (ifloat.isempty)
+        return IFloat::empty;
 
     if (ifloat <= 0)
         return -multiplicativeInverse(-ifloat);
