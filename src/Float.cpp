@@ -62,6 +62,8 @@ const IFloat IFloat::one   = 1;
 
 const IFloat IFloat::pos = IFloat(0, std::numeric_limits<Float>::infinity());
 const IFloat IFloat::neg = IFloat(-std::numeric_limits<Float>::infinity(), 0);
+const IFloat IFloat::all = IFloat(-std::numeric_limits<Float>::infinity(),
+                                   std::numeric_limits<Float>::infinity());
 
 const IFloat IFloat::half_pi  = constants.half_pi();
 const IFloat IFloat::pi       = constants.pi();
@@ -268,4 +270,103 @@ IFloat multiplicativeInverse(const IFloat &ifloat)
 
     r = 1 / -ifloat.b; // For rounding
     return IFloat(-r, 1 / ifloat.a);
+}
+
+IFloat cos(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat range = fmod(ifloat, IFloat::twice_pi);
+
+    if (width(range) >= lower(IFloat::twice_pi))
+        return IFloat(-1, 1);
+
+    bool up;
+    bool set = false;
+
+    if (ifloat.contains_zero())
+    {
+        set = true;
+        up = true;
+    }
+
+    if (range.contains(IFloat::pi) != false)
+    {
+        if (set)
+            return IFloat(-1, 1);
+
+        set = true;
+        up = false;
+    }
+
+    if (range.contains(IFloat::twice_pi) != false)
+    {
+        if (set)
+            return IFloat(-1, 1);
+
+        set = true;
+        up = true;
+    }
+
+    /* This can be more precise */
+    if (range.contains(IFloat::pi + IFloat::twice_pi) != false)
+        return IFloat(-1, 1);
+
+    UnprotectRounding upr;
+
+    if (!set)
+    {
+        if (upper(range) < lower(IFloat::pi))
+            return IFloat(cos_rd(upper(range)), cos_ru(lower(range)));
+
+        if (upper(range) < lower(IFloat::twice_pi))
+            return IFloat(cos_rd(lower(range)), cos_ru(upper(range)));
+
+        return IFloat(cos_rd(upper(range)), cos_ru(lower(range)));
+    }
+
+    /* Probably this part can be more fast, whit only a cosine */
+    if (up)
+        return IFloat(std::min(cos_rd(lower(range)), cos_rd(upper(range))), 1);
+
+    return IFloat(-1, std::max(cos_ru(lower(range)), cos_ru(upper(range))));
+}
+
+IFloat tan(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat range = fmod(ifloat, IFloat::pi);
+
+    if (width(range) >= lower(IFloat::pi))
+        return IFloat::all;
+
+    bool set;
+
+    if (range.contains(IFloat::half_pi) != false)
+        set = true;
+
+    if (range.contains(IFloat::half_pi + IFloat::pi) != false)
+    {
+        if (set)
+            return IFloat::all;
+        
+        set = true;
+    }
+
+    if (range.contains(IFloat::half_pi + IFloat::twice_pi) != false)
+        return IFloat::all;
+
+    UnprotectRounding upr;
+
+    if (!set)
+        return IFloat(tan_rd(lower(range)), tan_ru(upper(range)));
+
+    /* This can be more precise if it is checked if a peak is only touched but
+     * it is not passed. In this case we have only an extreme that contains an
+     * infinite
+     */
+    return IFloat::all;
 }

@@ -73,6 +73,7 @@ class FloatingStatus
  *****************************************/
 class IFloat
 {
+    //TODO: make the bisection functions
     protected:
         static FloatingStatus round;
 
@@ -115,8 +116,7 @@ class IFloat
         friend IFloat round (const IFloat &ifloat);
         friend IFloat lround(const IFloat &ifloat);
 
-        //TODO: sin, cos, tan, asin, acos, atan, sinh, cosh, sinpi, cospi,
-        //      tanpi, atanpi, sqrt, cbrt, pow
+        //TODO: sinh, cosh, sinpi, cospi, tanpi, atanpi, sqrt, cbrt, pow
         friend IFloat fmod        (const IFloat &a, const IFloat &b);
         friend IFloat exp         (const IFloat &ifloat);
         friend IFloat expm1       (const IFloat &ifloat);
@@ -126,6 +126,8 @@ class IFloat
         friend IFloat log10       (const IFloat &ifloat);
         friend IFloat sin         (const IFloat &ifloat);
         friend IFloat cos         (const IFloat &ifloat);
+        friend std::pair<IFloat, IFloat>
+                      sincos      (const IFloat &ifloat);
         friend IFloat tan         (const IFloat &ifloat);
         friend IFloat asin        (const IFloat &ifloat);
         friend IFloat acos        (const IFloat &ifloat);
@@ -162,7 +164,7 @@ class IFloat
         /* Constants */
         static const IFloat empty;
         static const IFloat zero, one;
-        static const IFloat pos, neg;
+        static const IFloat pos, neg, all;
         static const IFloat half_pi, pi, twice_pi;
         static const IFloat e;
 
@@ -204,7 +206,7 @@ class IFloat
         IFloat &operator/=(IFloat &b);
 
         bool contains(const Float  &val) const;
-        bool contains(const IFloat &ifloat) const;
+        boost::logic::tribool contains(const IFloat &ifloat) const;
         bool contains_zero() const;
         bool properContains(const IFloat &ifloat) const;
         bool isEmpty() const;
@@ -562,6 +564,59 @@ inline IFloat log10(const IFloat &ifloat)
     return IFloat(log10_rd(lower(domain)), log10_ru(upper(domain)));
 }
 
+inline IFloat sin(const IFloat &ifloat)
+{
+    /* This can be a little more fast and precise with a direct
+     * implementation
+     */
+
+    return cos(IFloat::half_pi - ifloat);
+}
+
+IFloat cos(const IFloat &ifloat);
+
+inline std::pair<IFloat, IFloat> sincos(const IFloat &ifloat)
+{
+    /* This can be a lot more faster with a direct implementation */
+    return std::pair<IFloat, IFloat>(sin(ifloat), cos(ifloat));
+}
+
+IFloat tan(const IFloat &ifloat);
+
+inline IFloat asin(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat range = intersect(ifloat, IFloat(-1, 1));
+
+    if (range.isempty)
+        return IFloat::empty;
+
+    return IFloat(asin_rd(lower(range)), asin_ru(upper(range)));
+}
+
+inline IFloat acos(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat range = intersect(ifloat, IFloat(-1, 1));
+
+    if (range.isempty)
+        return IFloat::empty;
+
+    return IFloat(acos_rd(upper(range)), acos_ru(lower(range)));
+}
+
+inline IFloat atan(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    return IFloat(atan_rd(upper(ifloat)), atan_ru(lower(ifloat)));
+}
+
 inline boost::logic::tribool operator<(const IFloat &a, const IFloat &b)
 {
     if (a.isempty or b.isempty)
@@ -698,13 +753,16 @@ inline bool IFloat::contains(const Float  &val) const
     return true;
 }
 
-inline bool IFloat::contains(const IFloat &ifloat) const
+inline boost::logic::tribool IFloat::contains(const IFloat &ifloat) const
 {
     if (isempty)
         return false;
 
-    if (a > ifloat.a or b < ifloat.b)
+    if (b < ifloat.a or a > ifloat.b)
         return false;
+
+    if (a > ifloat.a or b < ifloat.b)
+        return boost::logic::indeterminate;
 
     return true;
 }
