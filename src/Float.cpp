@@ -370,3 +370,8 @@ IFloat tan(const IFloat &ifloat)
      */
     return IFloat::all;
 }
+
+IFloat sinpi (const IFloat &ifloat);
+IFloat cospi (const IFloat &ifloat);
+IFloat tanpi (const IFloat &ifloat);
+IFloat atanpi(const IFloat &ifloat);

@@ -116,7 +116,7 @@ class IFloat
         friend IFloat round (const IFloat &ifloat);
         friend IFloat lround(const IFloat &ifloat);
 
-        //TODO: sinh, cosh, sinpi, cospi, tanpi, atanpi, sqrt, cbrt, pow
+        //TODO: sinpi, cospi, tanpi, atanpi, sqrt, cbrt, pow
         friend IFloat fmod        (const IFloat &a, const IFloat &b);
         friend IFloat exp         (const IFloat &ifloat);
         friend IFloat expm1       (const IFloat &ifloat);
@@ -616,6 +616,29 @@ inline IFloat atan(const IFloat &ifloat)
 
     return IFloat(atan_rd(upper(ifloat)), atan_ru(lower(ifloat)));
 }
+
+inline IFloat sinh(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    return IFloat(sinh_rd(lower(ifloat)), sinh_ru(upper(ifloat)));
+}
+
+inline IFloat cosh(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat param = abs(ifloat);
+
+    return IFloat(cosh_rd(lower(param)), cosh_ru(upper(param)));
+}
+
+IFloat sinpi (const IFloat &ifloat);
+IFloat cospi (const IFloat &ifloat);
+IFloat tanpi (const IFloat &ifloat);
+IFloat atanpi(const IFloat &ifloat);
 
 inline boost::logic::tribool operator<(const IFloat &a, const IFloat &b)
 {
