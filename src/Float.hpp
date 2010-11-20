@@ -73,7 +73,6 @@ class FloatingStatus
  *****************************************/
 class IFloat
 {
-    //TODO: make the bisection functions
     protected:
         static FloatingStatus round;
 
@@ -97,7 +96,6 @@ class IFloat
         friend IFloat abs(const IFloat &ifloat);
 
         friend IFloat square(const IFloat &ifloat);
-        //TODO: nroot
         friend IFloat cubic (const IFloat &ifloat);
         friend IFloat pow   (const IFloat &ifloat, int n);
         friend IFloat nroot (const IFloat &ifloat, int n);
@@ -115,8 +113,13 @@ class IFloat
         friend IFloat floor (const IFloat &ifloat);
         friend IFloat round (const IFloat &ifloat);
         friend IFloat lround(const IFloat &ifloat);
+        
+        friend std::pair<IFloat, IFloat> bisect(IFloat &ifloat);
+        friend std::pair<std::pair<IFloat, IFloat>, std::pair<IFloat, IFloat> >
+                                         weighted_bisect(IFloat &ifloat);
+        friend IFloat weighted_sum(IFloat &wa, IFloat &a,
+                                   IFloat &wb, IFloat &b);
 
-        //TODO: sinpi, cospi, tanpi, atanpi, sqrt, cbrt, pow
         friend IFloat fmod        (const IFloat &a, const IFloat &b);
         friend IFloat exp         (const IFloat &ifloat);
         friend IFloat expm1       (const IFloat &ifloat);
@@ -136,6 +139,8 @@ class IFloat
         friend IFloat cosh        (const IFloat &ifloat);
         friend IFloat sinpi       (const IFloat &ifloat);
         friend IFloat cospi       (const IFloat &ifloat);
+        friend std::pair<IFloat, IFloat>
+                      sincospi    (const IFloat &ifloat);
         friend IFloat tanpi       (const IFloat &ifloat);
         friend IFloat atanpi      (const IFloat &ifloat);
         friend IFloat sqrt        (const IFloat &ifloat);
@@ -363,6 +368,36 @@ inline IFloat square(const IFloat &ifloat)
     return r * r;
 }
 
+inline IFloat nroot(const IFloat &ifloat, int n)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    if (n == 0)
+        return IFloat::one;
+
+    if (n < 0)
+        return 1 / nroot(ifloat, -n);
+
+    ProtectRounding pr;
+
+    if (n % 2)
+    {
+        if (ifloat >= 0)
+            return pow(ifloat, 1. / n);
+
+        if (ifloat <= 0)
+            return -pow(ifloat, 1. / n);
+
+        return hull(-pow(IFloat(+0., -lower(ifloat)), 1. / n),
+                     pow(IFloat(+0.,  upper(ifloat)), 1. / n));
+    }
+
+    IFloat range = intersect(ifloat, IFloat::pos);
+
+    return pow(range, 1 / 2.);
+}
+
 inline IFloat cubic(const IFloat &ifloat)
 {
     return square(ifloat) * ifloat;
@@ -467,6 +502,47 @@ inline IFloat lround(const IFloat &ifloat)
         return ifloat;
 
     return IFloat(lround(ifloat.a), lround(ifloat.b));
+}
+
+inline std::pair<IFloat, IFloat> bisect(IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return std::pair<IFloat, IFloat>(IFloat::empty, IFloat::empty);
+
+    Float m = median(ifloat);
+    return std::pair<IFloat, IFloat>(IFloat(lower(ifloat), m),
+                                     IFloat(m, upper(ifloat)));
+}
+
+inline std::pair<std::pair<IFloat, IFloat>, std::pair<IFloat, IFloat> >
+                                 weighted_bisect(IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return std::pair<std::pair<IFloat, IFloat>, std::pair<IFloat, IFloat> >
+                    (std::pair<IFloat, IFloat>(IFloat::empty, IFloat::empty),
+                     std::pair<IFloat, IFloat>(IFloat::empty, IFloat::empty));
+
+    ProtectRounding pr;
+
+    Float m   = medianup(ifloat);
+    IFloat a  = IFloat(lower(ifloat), m),
+           b  = IFloat(m, upper(ifloat));
+    IFloat wa = IFloat(upper(a)) - IFloat(lower(a)),
+           wb = IFloat(upper(b)) - IFloat(lower(b));
+    Float  w  = upper(wa + wb);
+
+    return std::pair<std::pair<IFloat, IFloat>, std::pair<IFloat, IFloat> >
+        (std::pair<IFloat, IFloat>(a, wa / w),
+         std::pair<IFloat, IFloat>(b, wb / w));
+
+}
+
+inline IFloat weighted_sum(IFloat &wa, IFloat &a,
+                           IFloat &wb, IFloat &b)
+{
+    ProtectRounding pr;
+
+    return wa * a + wb * b;
 }
 
 inline IFloat fmod(const IFloat &a, const IFloat &b)
@@ -635,10 +711,105 @@ inline IFloat cosh(const IFloat &ifloat)
     return IFloat(cosh_rd(lower(param)), cosh_ru(upper(param)));
 }
 
-IFloat sinpi (const IFloat &ifloat);
-IFloat cospi (const IFloat &ifloat);
-IFloat tanpi (const IFloat &ifloat);
-IFloat atanpi(const IFloat &ifloat);
+inline IFloat sinpi(const IFloat &ifloat)
+{
+    /* This can be a little more fast and precise with a direct
+     * implementation
+     */
+
+    return cospi(1 / 2. - ifloat);
+}
+
+IFloat cospi(const IFloat &ifloat);
+
+inline std::pair<IFloat, IFloat> sincospi(const IFloat &ifloat)
+{
+    /* This can be a lot more faster with a direct implementation */
+    return std::pair<IFloat, IFloat>(sinpi(ifloat), cospi(ifloat));
+}
+
+IFloat tanpi(const IFloat &ifloat);
+
+inline IFloat atanpi(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    return IFloat(atanpi_rd(upper(ifloat)), atanpi_ru(lower(ifloat)));
+}
+
+inline IFloat sqrt(const IFloat &ifloat)
+{
+    /* This is ad imprecise and slow working stub */
+
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat range = intersect(ifloat, IFloat::pos);
+
+    return pow(range, 1 / 2.);
+}
+
+inline IFloat cbrt(const IFloat &ifloat)
+{
+    /* This is ad imprecise and slow working stub */
+
+    if (ifloat.isempty)
+        return ifloat;
+
+    if (ifloat >= 0)
+        return pow(ifloat, 1 / 2.);
+
+    if (ifloat <= 0)
+        return -pow(ifloat, 1 / 2.);
+
+    return hull( pow(IFloat(+0., -lower(ifloat)), 1 / 2.),
+                -pow(IFloat(+0.,  upper(ifloat)), 1 / 2.));
+}
+
+/* a must be positive.
+ * If you want to use a negative and b integer, you must to use the other pow
+ */
+inline IFloat pow(const IFloat &a, const IFloat &b)
+{
+    /* This is a working stub. The implementation is imprecise and slow */
+
+    if (a == IFloat::one)
+        return IFloat::one;
+
+    if (b == IFloat::zero)
+        return IFloat::one;
+
+    if (a == -IFloat::one and abs(b) == upper(IFloat::pos))
+        return IFloat::one;
+
+    if (abs(a) < 1 and b == lower(IFloat::neg))
+        return IFloat::one;
+
+    if (abs(a) > 1 and b == lower(IFloat::neg))
+        return IFloat::zero;
+
+    if (abs(a) < 1 and b == upper(IFloat::pos))
+        return IFloat::zero;
+
+    if (abs(a) > 1 and b == upper(IFloat::pos))
+        return IFloat::one;
+
+    if (a == upper(IFloat::pos) and b < 0)
+        return abs(IFloat(0));
+
+    if (a == upper(IFloat::pos) and b > 0)
+        return -abs(IFloat(0));
+
+    if (a.isempty or b.isempty)
+        return IFloat::empty;
+
+    ProtectRounding pr;
+
+    IFloat range = intersect(a, IFloat::pos);
+
+    return exp(b * log(range));
+}
 
 inline boost::logic::tribool operator<(const IFloat &a, const IFloat &b)
 {

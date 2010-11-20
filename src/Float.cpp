@@ -61,7 +61,7 @@ const IFloat IFloat::zero  = 0;
 const IFloat IFloat::one   = 1;
 
 const IFloat IFloat::pos = IFloat(0, std::numeric_limits<Float>::infinity());
-const IFloat IFloat::neg = IFloat(-std::numeric_limits<Float>::infinity(), 0);
+const IFloat IFloat::neg = IFloat(-std::numeric_limits<Float>::infinity(), -0.);
 const IFloat IFloat::all = IFloat(-std::numeric_limits<Float>::infinity(),
                                    std::numeric_limits<Float>::infinity());
 
@@ -371,7 +371,102 @@ IFloat tan(const IFloat &ifloat)
     return IFloat::all;
 }
 
-IFloat sinpi (const IFloat &ifloat);
-IFloat cospi (const IFloat &ifloat);
-IFloat tanpi (const IFloat &ifloat);
-IFloat atanpi(const IFloat &ifloat);
+IFloat cospi (const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat range = fmod(ifloat, 2);
+
+    if (width(range) >= 2)
+        return IFloat(-1, 1);
+
+    bool up;
+    bool set = false;
+
+    if (ifloat.contains_zero())
+    {
+        set = true;
+        up = true;
+    }
+
+    if (range.contains(1) != false)
+    {
+        if (set)
+            return IFloat(-1, 1);
+
+        set = true;
+        up = false;
+    }
+
+    if (range.contains(2) != false)
+    {
+        if (set)
+            return IFloat(-1, 1);
+
+        set = true;
+        up = true;
+    }
+
+    /* This can be more precise */
+    if (range.contains(3) != false)
+        return IFloat(-1, 1);
+
+    UnprotectRounding upr;
+
+    if (!set)
+    {
+        if (upper(range) < lower(1))
+            return IFloat(cospi_rd(upper(range)), cospi_ru(lower(range)));
+
+        if (upper(range) < lower(2))
+            return IFloat(cospi_rd(lower(range)), cospi_ru(upper(range)));
+
+        return IFloat(cospi_rd(upper(range)), cospi_ru(lower(range)));
+    }
+
+    /* Probably this part can be more fast, whit only a cosine */
+    if (up)
+        return IFloat(std::min(cospi_rd(lower(range)),
+                               cospi_rd(upper(range))), 1);
+
+    return IFloat(-1, std::max(cospi_ru(lower(range)), cospi_ru(upper(range))));
+}
+
+IFloat tanpi (const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat range = fmod(ifloat, 1);
+
+    if (width(range) >= lower(1))
+        return IFloat::all;
+
+    bool set;
+
+    if (range.contains(1 / 2.) != false)
+        set = true;
+
+    if (range.contains(3 / 2.) != false)
+    {
+        if (set)
+            return IFloat::all;
+        
+        set = true;
+    }
+
+    if (range.contains(5 / 2.) != false)
+        return IFloat::all;
+
+    UnprotectRounding upr;
+
+    if (!set)
+        return IFloat(tanpi_rd(lower(range)), tanpi_ru(upper(range)));
+
+    /* This can be more precise if it is checked if a peak is only touched but
+     * it is not passed. In this case we have only an extreme that contains an
+     * infinite
+     */
+    return IFloat::all;
+}
