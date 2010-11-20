@@ -44,6 +44,11 @@ class setupConstants
         {
             return IFloat(-(Float)(-2 * acos_rd(-1)), 2 * acos_ru(-1));
         }
+
+        inline IFloat e() const
+        {
+            return IFloat(-(Float)(-exp_rd(1)), exp_ru(1));
+        }
 };
 static setupConstants constants;
 
@@ -61,6 +66,8 @@ const IFloat IFloat::neg = IFloat(-std::numeric_limits<Float>::infinity(), 0);
 const IFloat IFloat::half_pi  = constants.half_pi();
 const IFloat IFloat::pi       = constants.pi();
 const IFloat IFloat::twice_pi = constants.twice_pi();
+
+const IFloat IFloat::e = constants.e();
 
 FloatingStatus::FloatingStatus()
 {

@@ -115,9 +115,8 @@ class IFloat
         friend IFloat round (const IFloat &ifloat);
         friend IFloat lround(const IFloat &ifloat);
 
-        //TODO: fmod, exp, expm1, log, log1p, log2, log10, sin, cos, tan, asin,
-        //      acos, atan, sinh, cosh, sinpi, cospi, tanpi, atanpi, sqrt,
-        //      cbrt, pow
+        //TODO: sin, cos, tan, asin, acos, atan, sinh, cosh, sinpi, cospi,
+        //      tanpi, atanpi, sqrt, cbrt, pow
         friend IFloat fmod        (const IFloat &a, const IFloat &b);
         friend IFloat exp         (const IFloat &ifloat);
         friend IFloat expm1       (const IFloat &ifloat);
@@ -165,6 +164,7 @@ class IFloat
         static const IFloat zero, one;
         static const IFloat pos, neg;
         static const IFloat half_pi, pi, twice_pi;
+        static const IFloat e;
 
         inline static FloatingStatus roundStatus()
         {
@@ -492,6 +492,74 @@ inline IFloat fmod(const IFloat &a, const IFloat &b)
     if (n1 == n2)
         return a - n1 * b;
     return a - hull(n1, n2) * b;
+}
+
+inline IFloat exp(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    return IFloat(exp_rd(lower(ifloat)), exp_ru(upper(ifloat)));
+}
+
+inline IFloat expm1(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    return IFloat(expm1_rd(lower(ifloat)), expm1_ru(upper(ifloat)));
+}
+
+inline IFloat log(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat domain = intersect(IFloat::pos, ifloat);
+
+    if (domain.isempty)
+        return IFloat::empty;
+
+    return IFloat(log_rd(lower(domain)), log_ru(upper(domain)));
+}
+
+inline IFloat log1p(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat domain = intersect(IFloat(-1, upper(IFloat::pos)), ifloat);
+
+    if (domain.isempty)
+        return IFloat::empty;
+
+    return IFloat(log1p_rd(lower(domain)), log1p_ru(upper(domain)));
+}
+
+inline IFloat log2(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat domain = intersect(IFloat::pos, ifloat);
+
+    if (domain.isempty)
+        return IFloat::empty;
+
+    return IFloat(log2_rd(lower(domain)), log2_ru(upper(domain)));
+}
+
+inline IFloat log10(const IFloat &ifloat)
+{
+    if (ifloat.isempty)
+        return ifloat;
+
+    IFloat domain = intersect(IFloat::pos, ifloat);
+
+    if (domain.isempty)
+        return IFloat::empty;
+
+    return IFloat(log10_rd(lower(domain)), log10_ru(upper(domain)));
 }
 
 inline boost::logic::tribool operator<(const IFloat &a, const IFloat &b)
