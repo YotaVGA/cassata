@@ -18,6 +18,7 @@
 // 02110-1301  USA
 
 #include "Scene.hpp"
+#include "SceneRegistrations.hpp"
 
 Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
                                         w(800), h(600), scenedoc("scene")
@@ -32,6 +33,41 @@ Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
     if (!scenedoc.setContent(&file, &error, &errorline, &errorcolumn))
         throw QString("Error in the scene file: %2.%3: %4").
             arg(errorline).arg(errorcolumn).arg(error);
+
+    QList<QSharedPointer<SceneElement> > shaders;
+    for (QDomNode i = scenedoc.firstChildElement().firstChild(); !i.isNull();
+            i = i.nextSibling())
+    {
+        if (!i.isElement())
+            continue;
+
+        QDomElement elem = i.toElement();
+        QHash<QString, BaseSceneRegister *>::const_iterator shaderiterator =
+            sceneregistrations.find(elem.tagName());
+        if (shaderiterator == sceneregistrations.end())
+            throw QString("Error in %1.%2: Shader %3 do not found").
+                arg(i.lineNumber()).arg(i.columnNumber()).
+                arg(elem.tagName());
+
+        QSharedPointer<SceneElement> shader =
+            shaderiterator.value()->newClass();
+        shader->construct(i, *this, shader);
+        shaders << shader;
+        QString name = elem.attribute("id");
+        if (!name.isEmpty())
+        {
+            if (element("names")[name].length())
+                throw QString("Error in %1.%2: There is already an object "
+                        "with id %3").arg(elem.lineNumber()).
+                    arg(elem.columnNumber()).arg(name);
+            element("names")[name] << shader;
+        }
+    }
+}
+
+SceneList &Scene::element(const QString &name)
+{
+    return lists[name];
 }
 
 void Scene::firstSolution()

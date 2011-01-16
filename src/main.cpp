@@ -23,6 +23,8 @@
 #include "Scene.hpp"
 #include "Render.hpp"
 #include "Float.hpp"
+#include "SceneImage.hpp"
+#include "SceneRegistrations.hpp"
 
 using namespace std;
 
@@ -34,6 +36,9 @@ void render(Render *render, Window *win, Scene *scene)
 int main(int argc, char **argv)
 {
     QLocale::setDefault(QLocale::C);
+
+    //Scene registrations
+    SceneRegister<SceneImage> regsceneimage("image");
 
     try
     {

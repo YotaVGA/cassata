@@ -20,3 +20,8 @@
 #include "SceneRegistrations.hpp"
 
 QHash<QString, BaseSceneRegister *> sceneregistrations;
+
+BaseSceneRegister::~BaseSceneRegister()
+{
+}
+

@@ -23,16 +23,20 @@
 #include <QtXml>
 #include <QtGui>
 
+typedef QHash<QString, QList<QSharedPointer<QObject> > > SceneList;
+
 class Scene
 {
     protected:
         int correct, incert, incorrect;
         int w, h;
         QDomDocument scenedoc;
+        QHash<QString, SceneList> lists;
 
     public:
         Scene(const QString &filename);
 
+        SceneList &element(const QString &name);
         void firstSolution();
         void refineSolution();
         const QColor pixel(int x, int y);

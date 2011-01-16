@@ -23,7 +23,7 @@
 import os
 
 src = ["main.cpp", "Float.cpp", "Window.cpp", "Render.cpp", "Scene.cpp",
-       "SceneRegistrations.cpp", "SceneElement.cpp"]
+       "SceneRegistrations.cpp", "SceneElement.cpp", "SceneImage.cpp"]
 
 opts = Variables('options.py')
 opts.Add(BoolVariable('DEBUG', 'If true the targets are build in debug mode', \

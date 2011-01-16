@@ -5,7 +5,7 @@
         <width> 800</width>
         <height>600</height>
     </image>
-    <pinhole/>
+    <!--<pinhole/>
     <diffuse id="lightmaterial">
         <emissivity>2</emissivity>
     </diffuse>
@@ -26,9 +26,9 @@
         </polygon>
     </mesh>
     <mesh>
-        <material id="meshmaterial"/>
+        <material id="meshmaterial"/>-->
         <!--back wall-->
-        <polygon>
+        <!--<polygon>
             <point>-1 -1 -2.5</point>
             <point>-1  1 -2.5</point>
             <point> 1  1 -2.5</point>
@@ -37,9 +37,9 @@
             <point>-1 -1 -2.5</point>
             <point> 1 -1 -2.5</point>
             <point> 1  1 -2.5</point>
-        </polygon>
+        </polygon>-->
         <!--floor-->
-        <polygon>
+        <!--<polygon>
             <point>-1 -1 -2.5</point>
             <point>-1 -1  0  </point>
             <point> 1 -1  0  </point>
@@ -49,5 +49,5 @@
             <point> 1 -1 -2.5</point>
             <point> 1 -1 0   </point>
         </polygon>
-    </mesh>
+    </mesh>-->
 </scene>
