@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include "Render.hpp"
+#include "Float.hpp"
 
 using namespace std;
 
@@ -36,6 +37,8 @@ void Render::render(Window *win, Scene &scene)
     timer.start();
 
     emit changeTitle(QString("Cassata prototype - Rendering - preparation"));
+
+    UnprotectRounding pr;
 
     scene.firstSolution();
     scene.refineSolution();

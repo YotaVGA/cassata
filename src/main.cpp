@@ -17,36 +17,23 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include <QtGui>
-#include <QtXml>
 #include <iostream>
-#include <cstdlib>
+#include <QtGui>
 #include "Window.hpp"
 #include "Scene.hpp"
-#include "SceneImage.hpp"
-#include "SceneMesh.hpp"
-#include "ScenePinhole.hpp"
-#include "SceneDiffuse.hpp"
-#include "SceneRegistrations.hpp"
 #include "Render.hpp"
+#include "Float.hpp"
 
 using namespace std;
 
 void render(Render *render, Window *win, Scene *scene)
 {
-    initFloats();
     render->render(win, *scene);
 }
 
 int main(int argc, char **argv)
 {
     QLocale::setDefault(QLocale::C);
-
-    //Scene registrations
-    SceneRegister<SceneImage>   regsceneimage  ("image");
-    SceneRegister<SceneMesh>    regscenemesh   ("mesh");
-    SceneRegister<ScenePinhole> regscenecamera ("pinhole");
-    SceneRegister<SceneDiffuse> regscenediffuse("diffuse");
 
     try
     {
@@ -61,9 +48,7 @@ int main(int argc, char **argv)
         QElapsedTimer timer;
         timer.start();
 
-        initFloats();
         Scene scene(args.at(1));
-        swapRounding();
 
         cout << "Parsing time: " <<
             r.showTime(timer.elapsed()).toStdString() << endl;

@@ -19,8 +19,9 @@
 
 #include "Scene.hpp"
 
-Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
-                                        w(800), h(600)
+Scene::Scene(const QString &/*filename*/) : correct(0), incert(0),
+                                            incorrect(0),
+                                            w(800), h(600)
 {
 }
 
@@ -32,7 +33,7 @@ void Scene::refineSolution()
 {
 }
 
-const QColor Scene::pixel(int x, int y)
+const QColor Scene::pixel(int /*x*/, int /*y*/)
 {
     correct++;
     return QColor(0, 0, 0);
