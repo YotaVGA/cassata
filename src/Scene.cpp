@@ -63,6 +63,11 @@ Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
             element("names")[name] << shader;
         }
     }
+
+    for (int i = 0; i < shaders.size(); i++)
+        shaders[i]->initialize();
+
+    element("names").clear();    
 }
 
 SceneList &Scene::element(const QString &name)
