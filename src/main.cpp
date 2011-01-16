@@ -17,13 +17,73 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include <cstdlib>
+#include <QtGui>
+#include <QtXml>
 #include <iostream>
-#include "Float.hpp"
+#include <cstdlib>
+#include "Window.hpp"
+#include "Scene.hpp"
+#include "SceneImage.hpp"
+#include "SceneMesh.hpp"
+#include "ScenePinhole.hpp"
+#include "SceneDiffuse.hpp"
+#include "SceneRegistrations.hpp"
+#include "Render.hpp"
 
-int main(int /*argc*/, char ** /*argv*/)
+using namespace std;
+
+void render(Render *render, Window *win, Scene *scene)
 {
-    if (2 < IFloat(3))
-        std::cout << "ok" << std::endl;
-    return EXIT_SUCCESS;
+    initFloats();
+    render->render(win, *scene);
+}
+
+int main(int argc, char **argv)
+{
+    QLocale::setDefault(QLocale::C);
+
+    //Scene registrations
+    SceneRegister<SceneImage>   regsceneimage  ("image");
+    SceneRegister<SceneMesh>    regscenemesh   ("mesh");
+    SceneRegister<ScenePinhole> regscenecamera ("pinhole");
+    SceneRegister<SceneDiffuse> regscenediffuse("diffuse");
+
+    try
+    {
+        QApplication app(argc, argv);
+
+        QStringList args = app.arguments();
+        if (args.length() != 3)
+            throw QString("Usage: %1 <scene.csd> <out.png>").arg(args.at(0));
+
+        Render r;
+
+        QElapsedTimer timer;
+        timer.start();
+
+        initFloats();
+        Scene scene(args.at(1));
+        swapRounding();
+
+        cout << "Parsing time: " <<
+            r.showTime(timer.elapsed()).toStdString() << endl;
+
+        Window win;
+        win.resize(scene.width(), scene.height());
+        win.show();
+        win.setFileName(args.at(2));
+        QFuture<void> retthread = QtConcurrent::run(render, &r, &win, &scene);
+
+        int ret = app.exec();
+        r.lock();
+        r.quit();
+        r.unlock();
+        retthread.waitForFinished();
+        return ret;
+    }
+    catch (const QString &s)
+    {
+        cerr << s.toStdString() << endl;
+        return EXIT_FAILURE;
+    }
 }
