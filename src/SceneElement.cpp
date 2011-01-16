@@ -19,8 +19,8 @@
 
 #include "SceneElement.hpp"
 
-void SceneElement::construct(const QDomNode &node, Scene &scene,
-                             QSharedPointer<SceneElement> &object)
+void SceneElement::construct(const QDomNode &/*node*/, Scene &/*scene*/,
+                             QSharedPointer<SceneElement> &/*object*/)
 {
 }
 

@@ -20,6 +20,7 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
+#include <QtXml>
 #include <QtGui>
 
 class Scene
@@ -27,6 +28,7 @@ class Scene
     protected:
         int correct, incert, incorrect;
         int w, h;
+        QDomDocument scenedoc;
 
     public:
         Scene(const QString &filename);

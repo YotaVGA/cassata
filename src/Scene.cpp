@@ -19,10 +19,19 @@
 
 #include "Scene.hpp"
 
-Scene::Scene(const QString &/*filename*/) : correct(0), incert(0),
-                                            incorrect(0),
-                                            w(800), h(600)
+Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
+                                        w(800), h(600), scenedoc("scene")
 {
+    QFile file(filename);
+
+    if (!file.open(QIODevice::ReadOnly))
+        throw QString("It is impossible to open the scene");
+
+    QString error;
+    int errorline, errorcolumn;
+    if (!scenedoc.setContent(&file, &error, &errorline, &errorcolumn))
+        throw QString("Error in the scene file: %2.%3: %4").
+            arg(errorline).arg(errorcolumn).arg(error);
 }
 
 void Scene::firstSolution()
