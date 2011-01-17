@@ -68,6 +68,8 @@ Scene::Scene(const QString &filename) : correct(0), incert(0), incorrect(0),
         shaders[i]->initialize();
 
     element("names").clear();    
+
+    gt.construct();
 }
 
 SceneList &Scene::element(const QString &name)

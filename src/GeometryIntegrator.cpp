@@ -17,17 +17,4 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneElement.hpp"
-
-void SceneElement::construct(const QDomNode &/*node*/, Scene &/*scene*/,
-                             QSharedPointer<SceneElement> &/*object*/)
-{
-}
-
-void SceneElement::initialize()
-{
-}
-
-SceneElement::~SceneElement()
-{
-}
+#include "GeometryIntegrator.hpp"

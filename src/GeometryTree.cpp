@@ -1,4 +1,4 @@
-// Copyright ® 2010-2011 Fulvio Satta
+// Copyright ® 2010 Fulvio Satta
 // If you want contact me, send an email to Yota_VGA@users.sf.net
 // This file is part of Cassata
 //
@@ -17,17 +17,12 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneElement.hpp"
+#include "GeometryTree.hpp"
 
-void SceneElement::construct(const QDomNode &/*node*/, Scene &/*scene*/,
-                             QSharedPointer<SceneElement> &/*object*/)
+void GeometryTree::add(Geometry &/*geometry*/)
 {
 }
 
-void SceneElement::initialize()
-{
-}
-
-SceneElement::~SceneElement()
+void GeometryTree::construct()
 {
 }

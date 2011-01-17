@@ -1,4 +1,4 @@
-// Copyright ® 2010 Fulvio Satta
+// Copyright ® 2010-2011 Fulvio Satta
 // If you want contact me, send an email to Yota_VGA@users.sf.net
 // This file is part of Cassata
 //

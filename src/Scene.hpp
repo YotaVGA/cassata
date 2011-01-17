@@ -22,6 +22,7 @@
 
 #include <QtXml>
 #include <QtGui>
+#include "GeometryTree.hpp"
 
 typedef QHash<QString, QList<QSharedPointer<QObject> > > SceneList;
 
@@ -32,6 +33,7 @@ class Scene
         int w, h;
         QDomDocument scenedoc;
         QHash<QString, SceneList> lists;
+        GeometryTree gt;
 
     public:
         Scene(const QString &filename);
@@ -59,6 +61,16 @@ class Scene
         inline int numberIncorrectPixels() const
         {
             return incorrect;
+        }
+
+        inline GeometryTree &tree()
+        {
+            return gt;
+        }
+
+        inline const GeometryTree &tree() const
+        {
+            return gt;
         }
 };
 

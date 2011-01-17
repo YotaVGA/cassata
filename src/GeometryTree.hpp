@@ -17,17 +17,16 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneElement.hpp"
+#ifndef GEOMETRYTREE_HPP
+#define GEOMETRYTREE_HPP
 
-void SceneElement::construct(const QDomNode &/*node*/, Scene &/*scene*/,
-                             QSharedPointer<SceneElement> &/*object*/)
-{
-}
+#include "Geometry.hpp"
 
-void SceneElement::initialize()
+class GeometryTree
 {
-}
+    public:
+        void add(Geometry &geometry);
+        void construct();
+};
 
-SceneElement::~SceneElement()
-{
-}
+#endif

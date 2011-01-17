@@ -17,17 +17,11 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 // 02110-1301  USA
 
-#include "SceneElement.hpp"
+#ifndef GEOMETRYINTEGRATOR_HPP
+#define GEOMETRYINTEGRATOR_HPP
 
-void SceneElement::construct(const QDomNode &/*node*/, Scene &/*scene*/,
-                             QSharedPointer<SceneElement> &/*object*/)
+class GeometryIntegrator
 {
-}
+};
 
-void SceneElement::initialize()
-{
-}
-
-SceneElement::~SceneElement()
-{
-}
+#endif
