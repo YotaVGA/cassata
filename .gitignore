@@ -4,3 +4,6 @@ build/
 options.py
 *.png
 *.pyc
+*.log
+*.pdf
+*.tuc

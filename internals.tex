@@ -1,0 +1,89 @@
+\mainlanguage[it]
+
+\starttext
+
+\section{Introduzione}
+Questo documento descrive il funzionamento logico degli algoritmi di rendering
+di Cassata.
+
+I motivi per cui scrivo questo documento sono due. Il primo è quello di
+attirare l'attenzione di persone (inizialmente sopratutto amici, ma verrà
+tradotto anche in inglese per allargare il bacino di utenza) per ricevere
+critiche, consigli e quant'altro nello sviluppo del software.
+
+Il secondo motivo è quello di chiarirmi le idee, scrivendo in maniera sistemata
+tutto.
+
+Il documento è, e sarà per un po', confusionario e sparso, scritto di fretta e
+senza molti riferimenti a letteratura od altro. Inoltre mancheranno moltissimi
+particolari, in parte perché ancora non scritti, in parte perché ancora non
+risolti. Inoltre è tremendamente suscettibile di errori e cambiamenti. Molte
+dimostrazioni inoltre ancora non esistono o non sono state formalizzate, per il
+momento mi affido al mio giudizio, in attesa di formalizzare tutto.
+
+Cercherò comunque di dare le nozioni di base di quelle cose che non è
+plausibile ritenere conosciute allo sviluppatore medio che ha una discreta
+infarinatura di computer grafica, senza però voler essere esaustivo.
+
+Se qualcuno avesse una qualunque idea, di qualunque tipo o volesse comunque
+mettersi in contatto con me, e non sapesse come fare, può scrivermi
+all'indirizzo \mbox{yota\_vga@users.sourceforge.net}.
+
+\section{Cosa dev'essere in grado di fare Cassata}
+Cassata è in grado di renderizzare, se sono presenti gli shader appositi,
+praticamente tutto, entro limiti decisamente poco stringenti:
+
+\startitemize
+\item Per tutti i valori richiesti dall'algoritmo devono poter essere stimati
+con un errore scelto sia in eccesso che in difetto (i valori richiesti
+dipendono anche dagli shader usati, perciò non posso elencarli, ma normalmente
+si tratta di emissività data una lunghezza d'onda, riflessività dato angolo
+uscente, intensità luminosa entrante, angolo entrante e lunghezza d'onda, e
+simili valori, normalmente richiesti in qualunque renderer).
+
+\item La scena deve prevedere un solo punto di equilibrio, e questo dev'essere
+stabile e statico.
+
+\item Ogni quantità scelta dev'essere integrabile quasi ovunque (dove per quasi
+ovunque si intende un insieme di misura nulla secondo Lebesgue) in un intorno
+piccolo a piacere.
+
+\item La scena può essere ad energia finita, od a potenza finita se vengono
+date ulteriori informazioni (che saranno chiare più avanti nel documento).
+\stopitemize
+
+Tutto il resto si intende come possibile. Quindi praticamente ogni cosa può
+essere renderizzata correttamente. Per sapere quanto può essere renderizzata
+correttamente, bisogna parlare di rumore.
+
+\subsection{Errori in Cassata}
+Cassata incorpora un algoritmo adattativo che permette di migliorare
+progressivamente la soluzione bene quanto si vuole. L'idea è quella di ridurre
+l'errore in maniera tale che il valore cercato cada interamente all'interno di
+uno degli intervalli di quantizzazione utilizzati nel risultato finale. Questo
+non è possibile solo nel caso in cui l'elemento da trovare si trovi esattamente
+nel valore che separa 2 intervalli di quantizzazione, e per questo è necessario
+impostare un raggio che indichi qual'è il minimo errore tollerato.
+
+Facendo in questo modo, quando l'elemento si trova a cavallo di 2 intervalli di
+quantizzazione contigui, e l'errore è più piccolo del raggio scelto, la
+procedura può terminare, indicando agli shader che si tratta di un possibile
+valore intermedio.
+
+È sempre possibile, chiaramente, trovare un raggio che renderizzi la scena alla
+perfezione, basti considerare che gli elementi da quantizzare sono un numero
+finito, ed ognuno si discosta di un valore dal punto di confine più vicino.
+Escludendo gli elementi con distanza 0, che sono quelli che si trovano
+esattamente a cavallo, basta prendere un raggio inferiore al più piccolo degli
+altri per renderizzare tutto perfettamente. Tuttavia il raggio corretto non è
+possibile trovarlo (per quanto ho potuto vedere fino ad ora, e sono abbastanza
+convinto della sua impossibilità). Comunque scegliendo un raggio estremamente
+piccolo si può ragionevolmente pensare che il rendering sia corretto.
+
+Quindi al di la della scelta del raggio (che da luogo ad un errore di veramente
+piccola entità, se il raggio è scelto come molto più piccolo degl'intervalli di
+quantizzazione, e che inoltre può essere totalmente eliminato se viene scelto
+un raggio sufficientemente piccolo) il rendering in Cassata risulterebbe
+corretto al 100\%.
+
+\stoptext
