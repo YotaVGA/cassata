@@ -34,19 +34,28 @@ Cassata è in grado di renderizzare, se sono presenti gli shader appositi,
 praticamente tutto, entro limiti decisamente poco stringenti:
 
 \startitemize
-\item Per tutti i valori richiesti dall'algoritmo devono poter essere stimati
-con un errore scelto sia in eccesso che in difetto (i valori richiesti
-dipendono anche dagli shader usati, perciò non posso elencarli, ma normalmente
-si tratta di emissività data una lunghezza d'onda, riflessività dato angolo
-uscente, intensità luminosa entrante, angolo entrante e lunghezza d'onda, e
-simili valori, normalmente richiesti in qualunque renderer).
+\item Tutti i valori richiesti dall'algoritmo devono poter essere stimati con
+un errore scelto sia in eccesso che in difetto, supposto che tutti i valori (al
+più infiniti) richiesti per il calcolo siano definiti entro un errore
+sufficientemente piccolo (i valori richiesti dipendono anche dagli shader usati,
+perciò non posso elencarli, ma normalmente si tratta di emissività data una
+lunghezza d'onda, riflessività dato angolo uscente, intensità luminosa
+entrante, angolo entrante e lunghezza d'onda, e simili valori, normalmente
+richiesti in qualunque renderer). Le coordinate stesse sono considerate come
+valori e per questo non precise.
 
 \item La scena deve prevedere un solo punto di equilibrio, e questo dev'essere
 stabile e statico.
 
 \item Ogni quantità scelta dev'essere integrabile quasi ovunque (dove per quasi
-ovunque si intende un insieme di misura nulla secondo Lebesgue) in un intorno
-piccolo a piacere.
+ovunque si intende ovunque tranne al più su un insieme di misura nulla secondo
+Lebesgue) in un intorno piccolo a piacere. Questo integrale non deve divergere
+al diminuire del raggio dell'intorno.
+
+\item La curva che descrive le risposte rispetto agli ingressi, di qualunque
+quantità calcolabile, dev'essere linearizzabile a tratti in maniera tale che
+all'aumentare degli intervalli converga quasi ovunque alla 
+dato, è possibile trovare suddivisioni
 
 \item La scena può essere ad energia finita, od a potenza finita se vengono
 date ulteriori informazioni (che saranno chiare più avanti nel documento).
@@ -85,5 +94,133 @@ piccola entità, se il raggio è scelto come molto più piccolo degl'intervalli 
 quantizzazione, e che inoltre può essere totalmente eliminato se viene scelto
 un raggio sufficientemente piccolo) il rendering in Cassata risulterebbe
 corretto al 100\%.
+
+\section{L'aritmetica ad intervalli}
+Per illustrare i metodi successivi devo introdurre una branca dell'analisi
+numerica generalmente non nota: l'aritmetica ad intervalli.
+
+In quest'aritmetica si considerano i vari valori ignoti, non li si conosce, per
+quanto siano un valore ben definito. Si sa però che i vari valori si trovano
+all'interno di un intervallo (che può essere eventualmente infinito a destra od
+a sinistra). Stabilito questo, è possibile ricavare altri intervalli a partire
+da quelli di partenza.
+
+Per chiarire la questione ecco un semplice esempio. Si supponga di voler
+sommare $a$ e~$b$, i cui valori non sono noti, ma che si sa che appartengono a
+degli intervalli noti: $a \in [0, 3]$,~$b \in [2, 4]$. Ovviamente non si sa
+quanto farà~$c = a + b$, ma si può dire senza dubbio che~$c \in [2, 7]$,
+determinando effettivamente un nuovo intervallo. Ovviamente all'intervallo
+vanno aggiunti eventuali errori di arrotondamento.
+
+Con l'aritmetica ad intervalli è possibile costruire qualunque funzione
+numerica. Se questa non prevede discontinuità intorno ai veri valori (e non
+agli intervalli) delle variabili di input né nel risultato finale né nei
+sottorisultati che si calcolano per ottenerlo, al ridurre degli intervalli
+degl'input automaticamente si ridurrà anche l'output, tanto bene quanto si
+vuole.
+
+\section{L'idea di base dietro Cassata}
+In questo paragrafo si vuole mostrare un algoritmo funzionante, tuttavia
+intrattabile, che rende possibile eseguire tutto ciò che è stato detto
+precedentemente. Successivamente si daranno dettagli su come velocizzare ed
+implementare le varie parti di Cassata, che altrimenti sarebbe assolutamente
+inutilizzabile (la sua complessità computazionale è veramente eccessiva
+definito così come lo è qua).
+
+L'algoritmo di cassata può essere diviso in 2 fasi (che poi diventeranno 3
+nell'implementazione che verrà illustrata successivamente). La prima consiste
+nel trovare un intorno entro il quale esiste una soluzione, la seconda consiste
+nel raffinare questa soluzione al punto da avere il renderer preciso come
+definito precedentemente.
+
+Prima di illustrare come tutto questo viene fatto, occorre vedere se è
+possibile. La prima fase può essere sicuramente svolta, perché l'intorno in
+questione esiste sicuramente, dalle condizioni che vengono indicate per il
+rendering. Inoltre questo intorno può anche essere individuato facilmente,
+perché l'unica soluzione esistente è anche in equilibrio statico, per cui se si
+trova un intorno con una soluzione possibile, la soluzione sarà senz'altro
+contenuta nell'intorno.
+
+La seconda fase può essere ugualmente svolto, perché è possibile raffinare
+continuamente la soluzione trovata, migliorando continuamente la soluzione
+trovata. Usando l'aritmetica ad intervalli questo garantisce la convergenza
+verso la soluzione, e da un errore massimo preciso, che può essere utilizzato
+per stabilire quando fermarsi.
+
+\subsection{La prima fase}
+Per capire questa fase bisogna capire che tutti gli elementi convergono ad un
+qualche valore, se tutti gli altri convergono al loro valore corretto. Questo
+può essere fatto per aree, il che è garantito dall'integrabilità di queste
+ultime, se le aree scelte sono sufficientemente piccole da ricadere dentro
+l'intorno di integrabilità. Siccome ogni valore può essere espresso come un
+intervallo (che in pratica è il valore corretto più o meno l'errore) che
+diventa sicuramente finito se gli altri intervalli sono sufficientemente piccoli,
+allora è possibile, dato un intorno scelto, immediatamente verificare se tutti i
+valori generati ricadono nell'intervallo scelto.
+
+Per trovare quale intorno contiene la soluzione, per prima cosa viene
+semplificato il problema, per trattare poi il caso generale fra poco. Si può
+supporre che gli elementi per i quali si vuole calcolare il valore abbiano una
+risposta lineare (più un'eventuale emissione costante) rispetto alle altre
+variabili, almeno entro determinate condizioni che si stanno testando (ad
+esempio entro una lunghezza d'onda). Eseguendo delle suddivisioni sufficienti è
+possibile impostare un sistema lineare che contenga come incognite i valori
+delle variabili da calcolare, in maniera tale che la ricorsione si possa
+risolvere semplicemente, tramite relazioni lineari. Sicuramente esiste una
+suddivisione sufficiente in cui la soluzione esiste, e come quella tutte le
+suddivisioni maggiori. Essendo possibile trovare una catena di suddivisioni
+numerabile che converge verso la suddivisione in intorni infinitesimi, allora
+sicuramente è possibile provare un numero finito di suddivisioni entro le quali
+poi è possibile trovare un intorno che contiene la soluzione.
+
+Nel caso più generale è comunque possibile linearizzare a tratti la curva non
+lineare. Prendendo dei valori di input, e scegliendo dei valori di output entro
+i quali si ritiene che l'elemento possa stare, è possibile stimare (è garantita
+la possibilità dalle condizioni sul rendering) dei coefficienti moltiplicativi
+minimi e massimi. Da qua si può risolvere il sistema lineare con l'aritmetica
+ad intervalli, e vedere se effettivamente il valore di output ricade
+nell'intervallo scelto. Ancora una volta, essendo possibile scegliere
+intervalli sempre più piccoli in maniera numerabile, e convergendo la soluzione
+entro un intorno dato, è possibile provare tutti gli intorni fino a trovare la
+soluzione. Va comunque notato che è necessario che le suddivisioni tra loro si
+possano sovrapporre, poiché altrimenti non sarebbe garantita la convergenza nei
+punti di confine tra le suddivisioni.
+
+\subsection{La seconda fase}
+Questa risulta assai più semplice della prima. È sufficiente calcolare, con gli
+intervalli trovati nella prima fase, il valore finale da renderizzare per la
+scena (di questi valori ce ne saranno tanti da calcolare, uno per canale per
+ogni pixel, in un'immagine, probabilmente, ma non si è ovviamente limitati solo
+a questo). Se questi valori avessero un errore troppo grande, sarebbe
+sufficiente suddividere gli intervalli un numero sufficiente di volte. Per via
+delle condizioni sul rendering è garantito che l'errore converga a 0.
+Ovviamente è possibile trovare una successione di suddivisioni continue
+numerabile, e quindi è facile mostrare che l'intero processo può convergere ad
+un errore piccolo a piacere in un tempo finito.
+
+\subsection{Gli errori di arrotondamento}
+Ovviamente gli errori di arrotondamento sono imprescindibili dall'algoritmo.
+Essendo però tutte le variabili definite come convergenti entro certi
+intervalli sufficientemente vicini alla soluzione, anche computazionalmente (è
+una delle condizioni sul rendering), allora è possibile ridurre gli errori di
+arrotondamento tanto quanto si vuole. Anche nei calcoli intermedi svolti dalle
+fasi 1 e 2, questi errori possono essere ridotti tanto piccoli quanto si vuole.
+Perciò è sufficiente trovare intervalli entro i quali la soluzione trovata, più
+l'errore di arrotondamento sviluppato nei passaggi intermedi, siano più piccoli
+del raggio dell'intorno minimo in cui la soluzione è convergente. Verificato
+questo si può semplicemente procedere a ridurre tanto quanto si vuole l'errore
+complessivo.
+
+\section{Cassata ed il rendering}
+Fino a questo momento le tecniche trattate sono applicabili a pressoché
+qualunque simulazione. E Cassata vuole essere tanto flessibile da permettere
+questo. Tuttavia trattare le tecniche in questione per tutto, come si è visto
+fino ad ora, risulta abbastanza complicato. Per questo motivo, tranne dove non
+sia chiaro o non risulti importante muoversi diversamente, verrà trattato il
+caso specifico del rendering. Cassata è principalmente un renderer, quindi la
+cosa risulta giustificata. Va notato comunque che Cassata può fare ogni tipo di
+simulazione (la cosa è intesa comunque sempre ai fini di un rendering o
+qualcosa strettamente collegato ad esso), e quindi le tecniche illustrate si
+devono intendere come più generali.
 
 \stoptext
